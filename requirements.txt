@@ -1,0 +1,11 @@
+pyomo>=6.7
+plotly>=5.18
+shapely>=2.0
+numpy>=1.24
+kaleido>=0.2.1
+# HTTP API
+fastapi>=0.110
+uvicorn[standard]>=0.27
+# MILP solver (HiGHS via Pyomo APPSI)
+highspy>=1.7
+ezdxf>=1.3

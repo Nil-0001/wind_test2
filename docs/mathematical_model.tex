@@ -1,0 +1,612 @@
+% !TeX program = xelatex
+% Compile with: xelatex mathematical_model.tex
+\documentclass[a4paper,11pt]{ctexart}
+
+\usepackage[a4paper,margin=2.4cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{bm}
+\usepackage{caption}
+\usepackage{longtable}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!60!black,
+    urlcolor=blue!60!black,
+    citecolor=blue!60!black,
+}
+
+% ---- math shortcuts ----
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\B}{\{0,1\}}
+\newcommand{\set}[1]{\mathcal{#1}}
+\DeclareMathOperator*{\maximize}{maximize}
+\DeclareMathOperator*{\subjectto}{subject\ to}
+
+% ---- code style ----
+\lstset{
+  basicstyle=\ttfamily\footnotesize,
+  breaklines=true,
+  frame=single,
+  rulecolor=\color{gray!50},
+  backgroundcolor=\color{gray!5},
+  keywordstyle=\color{blue!70!black}\bfseries,
+  commentstyle=\color{green!50!black}\itshape,
+  stringstyle=\color{red!60!black},
+  showstringspaces=false,
+}
+
+% ---- title ----
+\title{\textbf{中远海特风电配载算法 \\ 数学模型与实现说明}}
+\author{Wind Stowage Project}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent
+本文档系统地描述了\emph{中远海特风电构件配载}问题的数学模型与对应的程序实现。
+我们把"将多套风电塔筒构件按 set integrity 约束装载到三舱多层船舶上、最大化完整套数"建模为
+混合整数线性规划（MILP），通过\textbf{候选位置离散化}把连续坐标空间收敛到有限的二值决策域，
+并使用 Pyomo $\to$ HiGHS 求解。文档逐条给出 10 个业务约束的精确数学表达，
+配有源码位置索引；末尾讨论当前实现的不足与可能的优化方向。
+\end{abstract}
+
+\tableofcontents
+\bigskip
+\hrule
+\bigskip
+
+%==============================================================================
+\section{问题描述}
+%==============================================================================
+
+\subsection{业务背景}
+
+中远海特承运的海上风电塔筒为模块化结构，每\textbf{一套}由 6 个分件 (componentNo $1\sim 6$)
+组成，记为 \texttt{T110.5-70A} 序列。船舶拥有有限的甲板空间、舱室、舱盖板与可启用的旁通板
+(bypass board)；在地面平面上需要按\textbf{特定几何 / 安全 / 结构}约束放置货物，并尽可能多地装齐\textbf{完整套数}。
+
+\subsection{数据接口}
+
+\textbf{输入} (\texttt{test\_data.json})：
+\begin{itemize}[leftmargin=2em,itemsep=2pt]
+  \item \texttt{cargoData}：货物清单，按 cargoType 分组，每条目含 \texttt{componentNo, length, width, height, weight}。
+  \item \texttt{vesselStructure.bypassBoardPosition}：旁通板的多边形坐标、所属层、所属舱、编号。
+  \item \texttt{vesselStructure.hatchCoverPosition}：舱盖板的多边形坐标与编号（位于第 4 层）。
+  \item \texttt{vesselStructure.stowageFeasibleRange}：每层每舱的可配载多边形与限高（第 4 层不限高，第 3 层按 x 分段限高）。
+\end{itemize}
+
+\textbf{输出} (\texttt{result.json})：
+\begin{itemize}[leftmargin=2em,itemsep=2pt]
+  \item \texttt{totalSetCount}：总成套数 $S \in \Z_{\geq 0}$；
+  \item \texttt{cargoPosition}：每件被选中放置的货物详情（4 角坐标、Layer、tier、direction）；
+  \item \texttt{bypassBoardPosition}：被启用的旁通板列表（$\leq 18$）。
+\end{itemize}
+
+\subsection{优化目标}
+
+最大化总套数：
+\[
+\boxed{\max\ S \quad \text{s.t.}\quad
+\text{C1\ldots C10 (见 \S\ref{sec:constraints})}.}
+\]
+
+%==============================================================================
+\section{符号与参数}
+%==============================================================================
+
+\subsection{基本集合}
+
+\begin{longtable}{@{}lll@{}}
+\toprule
+符号 & 说明 & 取值 \\
+\midrule
+$\set{T}$ & cargoType 集合 & 当前数据为 $\{\text{T110.5-70A}\}$ \\
+$\set{K}$ & componentNo 集合 & $\{1,2,3,4,5,6\}$ \\
+$\set{L}$ & 层（layer） & $\{1,2,3,4\}$ \\
+$\set{R}$ & 舱（hatch） & $\{\text{Hatch1},\text{Hatch2},\text{Hatch3},\text{Hatch4}\}$（L4 无舱划分）\\
+$\set{B}$ & 旁通板集合 & 数据中 40 块（L2 / L3 各 20 块）\\
+$\set{H}$ & 舱盖板集合 & 20 块 \\
+$\set{P}$ & \textbf{候选放置集合} & 离散化生成（见 \S\ref{sec:candidate}）\\
+$\set{P}_{t,k}$ & 类型 $t$、组件 $k$ 的候选子集 & $\{p\in\set{P}:\text{type}(p)=t,\ \text{cn}(p)=k\}$\\
+\bottomrule
+\end{longtable}
+
+\subsection{每个候选 $p\in\set{P}$ 的属性}
+
+候选生成阶段为每个候选 $p$ 预计算：
+
+\begin{longtable}{@{}lll@{}}
+\toprule
+属性 & 含义 & 类型 \\
+\midrule
+$\text{cargo}(p)$ & 所对应的货物（type, cn, $\ell$, $w$, $h$, $\omega$） & 引用 \\
+$\text{layer}(p)$ & 层号 & $\set{L}$ \\
+$\text{dir}(p)$ & 方向（1 顺船 / 0 横船） & $\B$ \\
+$\text{tier}(p)$ & 层叠数 & $\{1,2\}$ \\
+$(x_p, y_p)$ & 左下角坐标（mm） & $\Z^2$ \\
+$\text{hatch}(p)$ & 所在舱（L4 时为 $\bot$） & $\set{R}\cup\{\bot\}$ \\
+$\set{S}(p)\subseteq\set{B}\cup\set{H}$ & 支撑该候选的板集合 & 集合 \\
+$[\underline{x}_p,\overline{x}_p]\times[\underline{y}_p,\overline{y}_p]$ & 平面足印 (footprint) & 矩形 \\
+$H_p = h_{\text{cargo}(p)}\cdot\text{tier}(p)$ & 物理层叠高度（mm） & $\Z_{\geq 0}$ \\
+$\omega_p = \omega_{\text{cargo}(p)}$ & 单件重量（吨） & $\R_{\geq 0}$ \\
+$\widetilde\omega_p = \omega_p\cdot\text{tier}(p)/2$ & 摊到一端板上的半重量 & $\R_{\geq 0}$ \\
+\bottomrule
+\end{longtable}
+
+其中足印取决于方向：
+\[
+(\overline{x}_p-\underline{x}_p,\ \overline{y}_p-\underline{y}_p) =
+\begin{cases}
+(\ell, w) & \text{dir}(p)=1\ (\text{length 沿 }x)\\
+(w, \ell) & \text{dir}(p)=0\ (\text{length 沿 }y)
+\end{cases}
+\]
+
+\subsection{常数参数}
+
+\begin{longtable}{@{}lll@{}}
+\toprule
+符号 & 数值 & 含义 \\
+\midrule
+$g_x$ & $500$ mm & 货物 x 向最小间距（C4） \\
+$g_y$ & $100$ mm & 货物 y 向最小间距（C3） \\
+$\sigma_{\max}$ & $3$ t/m\textsuperscript{2} & 板均布承重上限（C10） \\
+$B_{\max}$ & $18$ & 启用旁通板数量上限（C8） \\
+$H^{\text{lim}}_{\ell, r}$ & 来自 \texttt{stowageFeasibleRange}.Height & 第 $\ell$ 层第 $r$ 舱的限高（mm）\\
+$A_b$ & $\text{Polygon area}\ /\ 10^6$ & 板 $b$ 的面积（m\textsuperscript{2}） \\
+\bottomrule
+\end{longtable}
+
+%==============================================================================
+\section{决策变量}
+%==============================================================================
+
+\begin{align}
+y_p   &\in \B,    && \forall p \in \set{P} \quad
+   \text{（候选 $p$ 是否被选中）}\\
+z_b   &\in \B,    && \forall b \in \set{B} \quad
+   \text{（旁通板 $b$ 是否启用）}\\
+S     &\in \Z_{\geq 0}, &&
+   \text{（总成套数，目标变量）}
+\end{align}
+
+舱盖板 $\set{H}$ 不引入开关变量（视为永远可用，承重直接累加）。
+
+%==============================================================================
+\section{目标函数}
+%==============================================================================
+
+\begin{equation}
+\boxed{\maximize\ S}
+\end{equation}
+
+由 C2 强制 $S \leq \min_k \big(\sum_p \text{tier}(p)\cdot y_p\big)$，
+故最优 $S^*$ 即为最瓶颈分件的可装载件数。
+
+%==============================================================================
+\section{约束}\label{sec:constraints}
+%==============================================================================
+
+下文每条约束按"业务文字 $\to$ 数学表达 $\to$ 源码索引"的次序给出。
+
+\subsection{C1：方向决定层叠（direction $\Rightarrow$ tier）}
+
+\textbf{业务}：横船摆放（dir=0）只能 1 件；顺船（dir=1）可 1 或 2 件。
+
+\textbf{数学}：在候选生成阶段过滤——若 $\text{dir}(p)=0$ 则强制 $\text{tier}(p)=1$。
+模型层做不变量断言：
+\[
+\forall p\in\set{P}:\quad \text{dir}(p)=0 \Rightarrow \text{tier}(p)=1.
+\]
+
+\textbf{源码}：\texttt{src/constraints/c01\_direction\_tier.py}（生成期已过滤；此处仅 assertion）。
+
+\subsection{C2：成套约束（set integrity）}
+
+\textbf{业务}：必须把 componentNo $1\sim 6$ 凑齐才能计 1 套；$S$ 是整数。
+
+\textbf{数学}：对每个 $(t,k)\in\set{T}\times\set{K}$
+\begin{equation}\label{eq:c2}
+\sum_{p\in\set{P}_{t,k}} \text{tier}(p)\cdot y_p \;\geq\; S
+\end{equation}
+若 $\set{P}_{t,k}=\emptyset$，强制 $S=0$（缺件成不了套）。
+
+\textbf{源码}：\texttt{src/constraints/c02\_set\_integrity.py}。
+
+\subsection{C3：y 向（左右）间距 $> g_y$}
+
+\textbf{业务}：在 y 轴上相邻货物的间隔必须 $> 100$ mm；同舱同层为有效约束（不同舱物理隔开）。
+
+\textbf{数学}：定义\textbf{冲突对}集 $\set{C}_3 \subseteq \set{P}\times\set{P}$：
+\begin{align*}
+(p_1, p_2) \in \set{C}_3 \iff\ &\text{layer}(p_1)=\text{layer}(p_2),\\
+&\text{hatch}(p_1)=\text{hatch}(p_2)\ \text{（L4 不分舱）},\\
+&[\underline{x}_{p_1},\overline{x}_{p_1}]\cap[\underline{x}_{p_2},\overline{x}_{p_2}]\neq\emptyset,\\
+&\text{gap}_y(p_1,p_2) < g_y
+\end{align*}
+其中
+\[
+\text{gap}_y(p_1,p_2)=
+\begin{cases}
+0, & [\underline{y}_{p_1},\overline{y}_{p_1}]\cap[\underline{y}_{p_2},\overline{y}_{p_2}]\neq\emptyset\\
+\max(\underline{y}_{p_1},\underline{y}_{p_2})-\min(\overline{y}_{p_1},\overline{y}_{p_2}),
+& \text{otherwise}
+\end{cases}
+\]
+约束：
+\begin{equation}
+y_{p_1}+y_{p_2}\leq 1, \quad \forall (p_1,p_2)\in\set{C}_3.
+\end{equation}
+
+\textbf{源码}：\texttt{src/constraints/c03\_lateral\_gap.py}（按 $\underline{x}$ 排序后扫描线，
+$\underline{x}_{p_2}\geq\overline{x}_{p_1}$ 时 \texttt{break}）。
+
+\subsection{C4：x 向（前后）间距 $> g_x$}
+
+\textbf{业务}：x 轴上相邻货物的间隔必须 $> 500$ mm。
+
+\textbf{数学}：与 C3 对称——交换 $x \leftrightarrow y$、$g_y \leftrightarrow g_x$：
+\begin{align*}
+\set{C}_4 \subseteq\set{P}\times\set{P}:\
+&[\underline{y}_{p_1},\overline{y}_{p_1}]\cap[\underline{y}_{p_2},\overline{y}_{p_2}]\neq\emptyset\\
+&\text{gap}_x(p_1,p_2)<g_x\\
+y_{p_1}+y_{p_2}&\leq 1, \quad \forall (p_1,p_2)\in\set{C}_4.
+\end{align*}
+
+\textbf{源码}：\texttt{src/constraints/c04\_longitudinal\_gap.py}。
+
+\subsection{C5：四角必须落在支撑板上（layer 2 / 3 / 4）}
+
+\textbf{业务}：第 2、3、4 层货物的 4 个角点都要落在某块旁通板（L2/L3）或舱盖板（L4）的多边形内。
+
+\textbf{数学}：候选生成期硬过滤——若 $\text{layer}(p)\geq 2$，要求
+\[
+\text{corners}(p)\subseteq \bigcup_{b\in\text{允许板集合}} \text{poly}(b),
+\]
+其中 L2/L3 允许板为 $\set{B}$ 中同层板，L4 为 $\set{B}\cup\set{H}$。
+模型层只做断言。
+
+\textbf{源码}：\texttt{src/constraints/c05\_corners\_on\_board.py}（assertion）；
+\texttt{src/core/candidate\_layer23.py}、\texttt{candidate\_layer4.py}（生成期过滤）。
+
+\subsection{C6：同板不头对头}
+
+\textbf{业务}：第 2/3/4 层货物的左右两端必然担在某板上；从该端到所担板的对侧边界、
+y 向覆盖货物自身宽度的矩形区域内，禁止出现任何其它货物的部位。
+
+\textbf{数学}：对 $p$（$\text{layer}(p)\geq 2$），令
+\[
+b_L(p)=\arg\min_{b\in\set{S}(p)}\underline{x}_b, \quad
+b_R(p)=\arg\max_{b\in\set{S}(p)}\overline{x}_b,
+\]
+定义\textbf{禁忌带}：
+\[
+\set{Z}(p) = \big\{\,
+[\underline{x}_{b_L(p)},\underline{x}_p]\times[\underline{y}_p,\overline{y}_p],\ %
+[\overline{x}_p,\overline{x}_{b_R(p)}]\times[\underline{y}_p,\overline{y}_p]
+\,\big\}.
+\]
+冲突对：
+\[
+\set{C}_6 = \big\{ (p_1,p_2):\ \exists Z\in\set{Z}(p_1),\ Z\cap\text{footprint}(p_2)\neq\emptyset\big\}.
+\]
+约束：
+\begin{equation}
+y_{p_1}+y_{p_2}\leq 1, \quad \forall (p_1,p_2)\in\set{C}_6.
+\end{equation}
+
+\textbf{源码}：\texttt{src/constraints/c06\_no\_head\_to\_head.py}。
+
+\subsection{C7：可配载范围 + 限高跨层耦合}\label{sec:c7}
+
+C7 实际由 4 部分组成。
+
+\textbf{(7a) 平面足印必须落入 \texttt{stowageFeasibleRange} 多边形}（生成期硬过滤）：
+\[
+[\underline{x}_p,\overline{x}_p]\times[\underline{y}_p,\overline{y}_p] \subseteq
+\text{poly}_{\text{feasible}}(\text{layer}(p),\text{hatch}(p)).
+\]
+
+\textbf{(7b) Layer 3 自身限高严格不可破}（因 L4 舱盖必须盖回去；生成期硬过滤）：
+对 $\text{layer}(p)=3$，
+\[
+H_p = h_{\text{cargo}(p)}\cdot\text{tier}(p) \leq
+\min_{x\in[\underline{x}_p,\overline{x}_p]} H^{\text{lim}}_{3,\text{hatch}(p)}(x),
+\]
+其中右侧用 \texttt{height\_segments} 给出的分段最小值。
+
+\textbf{(7c) 跨层旁通板禁用}：若下层 cargo $p$ 的层叠高度突破累积限高至更高的层 $L$，
+则 $p$ footprint 与第 $L$ 层任意旁通板 $b$ 重叠时，强制 $b$ 不可启用：
+\begin{equation}
+y_p + z_b \leq 1, \quad
+\forall (p,b)\in \set{C}_{7c},
+\end{equation}
+其中
+\[
+\set{C}_{7c}=\bigg\{ (p,b):\
+\begin{aligned}
+&\text{layer}(p)\in\{1,2\},\ \text{layer}(b) = L,\\
+&L\in \mathrm{Reach}(\text{layer}(p),H_p,\text{hatch}(p)),\\
+&\text{footprint}(p)\cap\text{poly}(b)\neq\emptyset
+\end{aligned}\bigg\}.
+\]
+$\mathrm{Reach}$ 为下层 cargo 高度突破到的上层集合：
+\[
+\mathrm{Reach}(1,H,r)=\{2 \mid H>H^{\text{lim}}_{1,r}\}\cup
+\{3 \mid H>H^{\text{lim}}_{1,r}+H^{\text{lim}}_{2,r}\}\cup\{4\mid \cdots\},
+\]
+\[
+\mathrm{Reach}(2,H,r)=\{3\mid H>H^{\text{lim}}_{2,r}\}\cup\{4\mid \cdots\}.
+\]
+
+\textbf{(7d) 物理层叠下的货-货碰撞}：
+若下层 cargo $p_l$ 高出本层、其足印与某上层 cargo $p_u$ 足印有交集，二者不可同选：
+\begin{equation}
+y_{p_l} + y_{p_u} \leq 1, \quad
+\forall (p_l,p_u)\in\set{C}_{7d}.
+\end{equation}
+$\set{C}_{7d}$ 由 $\mathrm{Reach}$ 与平面相交共同决定（与 7c 相似的判据）。
+
+\textbf{源码}：\texttt{src/constraints/c07\_feasible\_range.py}（7c, 7d）；
+\texttt{candidate\_layer*.py}（7a, 7b）。
+
+\subsection{C8：旁通板启用上限 $\leq 18$ 且联动}
+
+\textbf{业务}：第 2/3 层货物的 4 角必须落在旁通板内；只有"被使用"的旁通板才视为启用；
+启用总数 $\leq 18$。
+
+\textbf{数学}：
+\begin{align}
+\sum_{b\in\set{B}} z_b &\leq B_{\max} = 18,\\
+y_p &\leq z_b, \quad \forall p:\ \text{layer}(p)\in\{2,3\},\ b\in\set{S}(p),\\
+z_b &\leq \sum_{p:\,b\in\set{S}(p)} y_p, \quad \forall b\in\set{B}.\quad\text{(8c, 反向防虚启用)}
+\end{align}
+
+(8c) 保证若没有候选实际使用 $b$，则 $z_b=0$，避免目标可行域内出现无意义的启用。
+
+\textbf{源码}：\texttt{src/constraints/c08\_bypass\_limit.py}。
+
+\subsection{C9：Layer 1 / 2 / 3 不跨舱}
+
+\textbf{业务}：低 3 层的货物必须完整位于单一 hatch 内。
+
+\textbf{数学}：候选生成期硬过滤（每个 L1/L2/L3 候选都标注 hatch\_id）：
+\[
+\forall p:\ \text{layer}(p)\in\{1,2,3\}\ \Rightarrow\ \text{hatch}(p)\neq\bot.
+\]
+模型层只做断言。
+
+\textbf{源码}：\texttt{src/constraints/c09\_no\_cross\_hatch.py}。
+
+\subsection{C10：板均布承重 $\leq 3$ t/m\textsuperscript{2}}
+
+\textbf{业务}：一件货物对它"两端担在的板"各贡献一半重量；同一板上承担的总半重量除以板面积
+（m\textsuperscript{2}）不超过 $\sigma_{\max}=3$ t/m\textsuperscript{2}。
+
+\textbf{数学}：对每块旁通板 $b\in\set{B}$，
+\begin{equation}
+\sum_{p:\,b\in\set{S}(p)} \widetilde\omega_p \cdot y_p
+\;\leq\; \sigma_{\max} \cdot A_b \cdot z_b.
+\end{equation}
+对每块舱盖板 $c\in\set{H}$（不带 $z$，永远视为可用）：
+\begin{equation}
+\sum_{p:\,c\in\set{S}(p)} \widetilde\omega_p \cdot y_p
+\;\leq\; \sigma_{\max}\cdot A_c.
+\end{equation}
+
+\textbf{源码}：\texttt{src/constraints/c10\_load\_capacity.py}。
+
+%==============================================================================
+\section{完整 MILP 形式}
+%==============================================================================
+
+将上述各部分组装：
+\begin{equation}\label{eq:milp}
+\boxed{
+\begin{aligned}
+\maximize\quad   & S \\
+\subjectto\quad
+&\sum_{p\in\set{P}_{t,k}} \text{tier}(p)\,y_p \geq S,
+   && \forall t\in\set{T},\ k\in\set{K} \tag{C2}\\
+&y_{p_1}+y_{p_2}\leq 1, && \forall (p_1,p_2)\in\set{C}_3\cup\set{C}_4\cup\set{C}_6\cup\set{C}_{7d} \tag{C3,4,6,7d}\\
+&y_p + z_b \leq 1, && \forall (p,b)\in\set{C}_{7c} \tag{C7c}\\
+&y_p \leq z_b,
+   && \forall p:\,\text{layer}(p)\in\{2,3\},\ b\in\set{S}(p) \tag{C8b}\\
+&z_b \leq \sum_{p:\,b\in\set{S}(p)} y_p,
+   && \forall b\in\set{B} \tag{C8c}\\
+&\sum_{b\in\set{B}} z_b \leq 18, && \tag{C8a}\\
+&\sum_{p:\,b\in\set{S}(p)} \widetilde\omega_p\, y_p
+   \leq \sigma_{\max}\, A_b\, z_b,
+   && \forall b\in\set{B} \tag{C10a}\\
+&\sum_{p:\,c\in\set{S}(p)} \widetilde\omega_p\, y_p
+   \leq \sigma_{\max}\, A_c,
+   && \forall c\in\set{H} \tag{C10b}\\
+& y_p\in\B,\ z_b\in\B,\ S\in\Z_{\geq 0}.
+\end{aligned}}
+\end{equation}
+
+C1、C5、C9、C7a、C7b 在\textbf{候选生成阶段}就被剔除，不再出现在 MILP 中。
+
+%==============================================================================
+\section{实现：候选生成 + 求解}\label{sec:candidate}
+%==============================================================================
+
+\subsection{候选位置离散化}
+
+由于 $(x_p, y_p)$ 本是连续变量，直接建模会得到非凸非线性问题；本工程采用\textbf{候选离散化}
+将其退化为 0-1 选择。每候选 $p$ 是一个具体的 $(\text{cargo},\text{layer},x,y,\text{dir},\text{tier})$ 元组。
+按层枚举：
+
+\begin{itemize}[leftmargin=2em,itemsep=2pt]
+\item \textbf{Layer 1}：在 \texttt{stowageFeasibleRange}.Layer1.Hatch$k$ 多边形内做\textbf{网格采样}；
+步长 $\Delta x = \ell_p + g_x$、$\Delta y = w_p + g_y$（依方向）；
+\textbf{phase 参数} $n_x, n_y$ 控制每方向的偏移网格叠加数。
+\item \textbf{Layer 2 / 3}：以\textbf{旁通板对} $(b_L, b_R)$ 为锚点；
+要求 BL/TL 落 $b_L$ 内、BR/TR 落 $b_R$ 内（含 $b_L=b_R$ 单板情形）；
+$x$ 取允许区间 $[\underline{x}_{b_L},\overline{x}_{b_L}]\cap[\underline{x}_{b_R}-\ell_p,\overline{x}_{b_R}-\ell_p]$ 端点；
+$y$ 按板高分槽。
+\item \textbf{Layer 4}：在 Layer4 多边形内网格采样 + 4 角必须落 $\set{B}\cup\set{H}$。
+\end{itemize}
+
+\textbf{源码}：\texttt{src/core/candidate\_gen.py}（顶层调度），
+\texttt{src/core/candidate\_layer1.py / candidate\_layer23.py / candidate\_layer4.py}。
+
+\subsection{冲突对预计算}
+
+C3、C4、C6、C7d 是 $O(|\set{P}|^2)$ 配对约束。我们按 $(\text{layer},\text{hatch})$ 分组（C9 保证跨舱不需配对），
+组内按 $\underline{x}$（或 $\underline{y}$）排序；当 $\underline{x}_{p_2}\geq\overline{x}_{p_1}$ 即\texttt{break}，
+将平均复杂度从 $O(N^2)$ 降到 $O(N + |\set{C}|)$。
+
+\subsection{求解流水线}
+
+\begin{enumerate}[leftmargin=2em,itemsep=2pt]
+\item \texttt{load} 解析输入 → \texttt{ProblemData}（\texttt{src/core/data\_loader.py}）。
+\item \texttt{candidates} 候选生成 → $|\set{P}|$ 通常 $\sim 5\,000$（默认 phase=1）。
+\item \texttt{build} 构造 Pyomo 模型 + 冲突对（\texttt{src/solver/pyomo\_model.py}），约束总数典型 $10^5\sim 10^6$。
+\item \texttt{solve} APPSI HiGHS 分支定界求解，可设 \texttt{time\_limit\_s} 上限。
+\item \texttt{output} 抽取解 → \texttt{result.json} + 2D / 3D 可视化 HTML。
+\end{enumerate}
+
+\subsection{接口}
+
+可作为\textbf{库函数}调用：
+\begin{lstlisting}[language=Python]
+from src.service import solve_stowage
+result = solve_stowage(test_data, time_limit_s=180)
+# result.result            # dict, == result.json
+# result.visualization_html
+# result.stowage_3d_html
+\end{lstlisting}
+
+或作为 \textbf{HTTP API}（FastAPI + SSE，详见 \texttt{docs/API\_USAGE.md}）。
+
+%==============================================================================
+\section{当前不足与未来优化方向}
+%==============================================================================
+
+\subsection{已知不足}
+
+\begin{description}[leftmargin=2em,style=nextline]
+\item[(L1) 离散化 $\Rightarrow$ 仅候选集内最优]
+本质上 MILP 求得的是\textbf{所枚举候选集合 $\set{P}$ 上的全局最优}，
+而非真实连续坐标空间中的全局最优。phase 参数提供加密 $\set{P}$ 的杠杆，但
+$|\set{P}|$ 与求解时间近似平方关系，加密代价快速发散。
+
+\item[(L2) 冲突对矩阵的 $O(N^2)$ 内存占用]
+当 phase 提高到 $|\set{P}|\geq 2\times 10^4$ 时，C3/C4/C6/C7d 的二元约束对数可达 $10^7\sim10^8$，
+Pyomo 在构造 \texttt{ConcreteModel} 阶段就可能 OOM（已在实验中触发）。当前的扫描线 + 分组缓解后仍是
+$O(N\log N + |\text{真实重叠}|)$。
+
+\item[(L3) HiGHS presolve 不受 \texttt{time\_limit} 控制]
+当前 \texttt{time\_limit\_s} 仅约束 B\&B 阶段。对于大模型，HiGHS 的 presolve 常需 $30$–$60\,$s，
+且无外部接口截断。导致用户感知的"总时长"超过设定值。
+
+\item[(L4) 单实例单线程求解，无 warm-start]
+每次 \texttt{POST /solve} 都从零构造模型 + 重新求解，不复用之前的分支信息或可行解。
+对于"调参 + 重跑"的工作流效率偏低。
+
+\item[(L5) 多 cargoType 联合配载尚未实测]
+现 C2 形式上支持任意多类型（按 $(t,k)$ 分组）。但当前测试数据仅 1 个 cargoType，
+"跨类型不混套"的语义需要数据上线后回归验证。
+
+\item[(L6) tier 仅支持 1/2，且要求同 cn 同高度]
+真实业务中可能存在不同分件混叠（如 C5+C6）的情况，本模型未覆盖；扩展会增加候选维度。
+
+\item[(L7) 候选生成阶段假设矩形足印]
+对于细微的塔筒锥度（length 与 width 端面不一致）、吊耳等突起，简化为矩形 bbox；
+极端情况下可能 over-estimate 间距冲突或 under-estimate 物理碰撞。
+
+\item[(L8) 头对头 (C6) 仅基于 supporting\_boards 列表]
+当板的 polygon 不严格凸或角点恰在板边缘时，\texttt{point\_in\_polygon} 的 $\varepsilon$
+判定可能让"勉强落上"的角点造成不一致。
+
+\item[(L9) 求解失败时无可行解保留]
+若 \texttt{time\_limit} 内未找到可行解，当前返回空结果（$S=0$），不返回 LP 松弛或 partial。
+缺乏"渐近改善的次优解流"。
+
+\item[(L10) 可视化使用层间常数 z 偏移]
+\texttt{stowage\_3d.html} 中各 layer 的 $z$ 用 \texttt{LAYER\_GAP\_Z} 常数堆叠，
+不反映物理高度。当下层突破限高时视觉上不显示真实碰撞。
+\end{description}
+
+\subsection{优化方向}
+
+\begin{description}[leftmargin=2em,style=nextline]
+
+\item[(F1) Lazy / callback constraints]
+将 C3/C4/C6/C7d 改为\textbf{懒加载约束}（HiGHS 暂未原生支持，可改 Gurobi 或 OR-Tools CP-SAT），
+仅在 LP 解违反时切割。可大幅降低初始模型规模与 build 阶段时间。
+
+\item[(F2) 二阶段求解：粗 → 局部细化]
+第一阶段使用 phase=1 的稀疏候选拿到结构性最优 $\hat{S}$；
+第二阶段固定大局，仅在已选位置近邻做\textbf{局部搜索}（VLNS、模拟退火、LP 局部修正），
+逼近连续最优。
+
+\item[(F3) 列生成（column generation）]
+把候选集 $\set{P}$ 视为列空间，从松弛解的 reduced cost 动态加入新列。
+对超大 $|\set{P}|$ 场景天然友好，可与 (F1) 结合。
+
+\item[(F4) 改用对称破除约束（symmetry breaking）]
+同 cn、同 layer、同舱内的对称候选可加 lexicographic 约束剪枝，缩小搜索树。
+
+\item[(F5) Warm-start + 可取消任务]
+将求解搬入 \texttt{multiprocessing} 子进程，进程级超时 + 中途结果回收；
+支持 \texttt{POST /cancel/\{task\_id\}}。同时保留上次解作为 MIP start。
+
+\item[(F6) 真三维碰撞建模]
+把 layer 的离散索引升级为连续 $z_p$ 变量，C7c/C7d 改为通用 3D 不重叠（big-M / disjunctive），
+让吊耳、尾翼等附属结构也能精确建模。
+
+\item[(F7) 异步进度上报与前端友好接口]
+当前 SSE 已经支持 progress + log；可进一步发送 LP 上界、当前最优整数解，
+让前端实时刷新"已找到的最大套数"。
+
+\item[(F8) GPU / 分布式求解]
+对超大批配载场景，可探索 NVIDIA cuOpt 或者 Decision Diagrams 等异构加速。
+
+\item[(F9) 多 cargoType + 多船次联合调度]
+向上扩展为多船多航次的总调度问题，引入"同套同船"约束，与本文 MILP 通过分解（Benders / DW）耦合。
+
+\item[(F10) 数据驱动的参数自动调优]
+对历史数据训练 surrogate 模型预测最优 phase 配置，
+按数据规模自动选 Fast / Standard / Fine，对终端用户隐藏调参细节。
+\end{description}
+
+%==============================================================================
+\section*{附录 A：源码—约束对照}
+%==============================================================================
+
+\begin{tabular}{@{}llp{8cm}@{}}
+\toprule
+约束 & 文件 & 主要逻辑 \\
+\midrule
+C1 & c01\_direction\_tier.py & 不变量断言（生成期已过滤） \\
+C2 & c02\_set\_integrity.py & 按 $(t,k)$ 分组，加 $\sum\text{tier}\cdot y\geq S$ \\
+C3 & c03\_lateral\_gap.py & 扫描线生成 y 向冲突对 \\
+C4 & c04\_longitudinal\_gap.py & 扫描线生成 x 向冲突对 \\
+C5 & c05\_corners\_on\_board.py & 候选 4 角点检查（assertion） \\
+C6 & c06\_no\_head\_to\_head.py & 计算每候选的两侧禁忌带 + 配对约束 \\
+C7c, C7d & c07\_feasible\_range.py & 跨层 reach 矩阵 $\to$ 板禁用 + 货-货碰撞 \\
+C8 & c08\_bypass\_limit.py & 启用上限、双向链接 \\
+C9 & c09\_no\_cross\_hatch.py & 不变量断言 \\
+C10 & c10\_load\_capacity.py & 板按 $\sum\widetilde\omega\,y \leq 3 A z$ \\
+\bottomrule
+\end{tabular}
+
+\bigskip
+\noindent\rule{\linewidth}{0.6pt}\par\smallskip
+\textit{文档版本对应代码：\texttt{src/} 树（commit @ \today）；
+模型构造入口 \texttt{src/solver/pyomo\_model.py:build\_model()}。}
+
+\end{document}

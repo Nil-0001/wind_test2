@@ -1,0 +1,4142 @@
+{
+  "totalSetCount": 27,
+  "cargoPosition": [
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 1",
+      "componentNo": 1,
+      "cargoLabel": "Tower",
+      "length": 8910,
+      "width": 4550,
+      "height": 4640,
+      "weight": 72.6,
+      "Layer": 1,
+      "coordinate": {
+        "1": {
+          "x": 13466,
+          "y": 18020,
+          "z": 0.0
+        },
+        "2": {
+          "x": 13466,
+          "y": 26930,
+          "z": 0.0
+        },
+        "3": {
+          "x": 18016,
+          "y": 26930,
+          "z": 0.0
+        },
+        "4": {
+          "x": 18016,
+          "y": 18020,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 0
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 1",
+      "componentNo": 1,
+      "cargoLabel": "Tower",
+      "length": 8910,
+      "width": 4550,
+      "height": 4640,
+      "weight": 72.6,
+      "Layer": 1,
+      "coordinate": {
+        "1": {
+          "x": 105780,
+          "y": 1469,
+          "z": 0.0
+        },
+        "2": {
+          "x": 105780,
+          "y": 6019,
+          "z": 0.0
+        },
+        "3": {
+          "x": 114690,
+          "y": 6019,
+          "z": 0.0
+        },
+        "4": {
+          "x": 114690,
+          "y": 1469,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 1",
+      "componentNo": 1,
+      "cargoLabel": "Tower",
+      "length": 8910,
+      "width": 4550,
+      "height": 4640,
+      "weight": 72.6,
+      "Layer": 1,
+      "coordinate": {
+        "1": {
+          "x": 105780,
+          "y": 6119,
+          "z": 0.0
+        },
+        "2": {
+          "x": 105780,
+          "y": 10669,
+          "z": 0.0
+        },
+        "3": {
+          "x": 114690,
+          "y": 10669,
+          "z": 0.0
+        },
+        "4": {
+          "x": 114690,
+          "y": 6119,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 1",
+      "componentNo": 1,
+      "cargoLabel": "Tower",
+      "length": 8910,
+      "width": 4550,
+      "height": 4640,
+      "weight": 72.6,
+      "Layer": 1,
+      "coordinate": {
+        "1": {
+          "x": 105780,
+          "y": 20069,
+          "z": 0.0
+        },
+        "2": {
+          "x": 105780,
+          "y": 24619,
+          "z": 0.0
+        },
+        "3": {
+          "x": 114690,
+          "y": 24619,
+          "z": 0.0
+        },
+        "4": {
+          "x": 114690,
+          "y": 20069,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 1",
+      "componentNo": 1,
+      "cargoLabel": "Tower",
+      "length": 8910,
+      "width": 4550,
+      "height": 4640,
+      "weight": 72.6,
+      "Layer": 1,
+      "coordinate": {
+        "1": {
+          "x": 115190,
+          "y": 6119,
+          "z": 0.0
+        },
+        "2": {
+          "x": 115190,
+          "y": 10669,
+          "z": 0.0
+        },
+        "3": {
+          "x": 124100,
+          "y": 10669,
+          "z": 0.0
+        },
+        "4": {
+          "x": 124100,
+          "y": 6119,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 1",
+      "componentNo": 1,
+      "cargoLabel": "Tower",
+      "length": 8910,
+      "width": 4550,
+      "height": 4640,
+      "weight": 72.6,
+      "Layer": 2,
+      "coordinate": {
+        "1": {
+          "x": 73880,
+          "y": 80,
+          "z": 0.0
+        },
+        "2": {
+          "x": 73880,
+          "y": 8990,
+          "z": 0.0
+        },
+        "3": {
+          "x": 78430,
+          "y": 8990,
+          "z": 0.0
+        },
+        "4": {
+          "x": 78430,
+          "y": 80,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 0
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 1",
+      "componentNo": 1,
+      "cargoLabel": "Tower",
+      "length": 8910,
+      "width": 4550,
+      "height": 4640,
+      "weight": 72.6,
+      "Layer": 2,
+      "coordinate": {
+        "1": {
+          "x": 73880,
+          "y": 9090,
+          "z": 0.0
+        },
+        "2": {
+          "x": 73880,
+          "y": 18000,
+          "z": 0.0
+        },
+        "3": {
+          "x": 78430,
+          "y": 18000,
+          "z": 0.0
+        },
+        "4": {
+          "x": 78430,
+          "y": 9090,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 0
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 1",
+      "componentNo": 1,
+      "cargoLabel": "Tower",
+      "length": 8910,
+      "width": 4550,
+      "height": 4640,
+      "weight": 72.6,
+      "Layer": 2,
+      "coordinate": {
+        "1": {
+          "x": 73880,
+          "y": 18100,
+          "z": 0.0
+        },
+        "2": {
+          "x": 73880,
+          "y": 27010,
+          "z": 0.0
+        },
+        "3": {
+          "x": 78430,
+          "y": 27010,
+          "z": 0.0
+        },
+        "4": {
+          "x": 78430,
+          "y": 18100,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 0
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 1",
+      "componentNo": 1,
+      "cargoLabel": "Tower",
+      "length": 8910,
+      "width": 4550,
+      "height": 4640,
+      "weight": 72.6,
+      "Layer": 3,
+      "coordinate": {
+        "1": {
+          "x": 59452,
+          "y": 14030,
+          "z": 0.0
+        },
+        "2": {
+          "x": 59452,
+          "y": 18580,
+          "z": 0.0
+        },
+        "3": {
+          "x": 68362,
+          "y": 18580,
+          "z": 0.0
+        },
+        "4": {
+          "x": 68362,
+          "y": 14030,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 1",
+      "componentNo": 1,
+      "cargoLabel": "Tower",
+      "length": 8910,
+      "width": 4550,
+      "height": 4640,
+      "weight": 72.6,
+      "Layer": 3,
+      "coordinate": {
+        "1": {
+          "x": 59452,
+          "y": 18680,
+          "z": 0.0
+        },
+        "2": {
+          "x": 59452,
+          "y": 23230,
+          "z": 0.0
+        },
+        "3": {
+          "x": 68362,
+          "y": 23230,
+          "z": 0.0
+        },
+        "4": {
+          "x": 68362,
+          "y": 18680,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 1",
+      "componentNo": 1,
+      "cargoLabel": "Tower",
+      "length": 8910,
+      "width": 4550,
+      "height": 4640,
+      "weight": 72.6,
+      "Layer": 3,
+      "coordinate": {
+        "1": {
+          "x": 51980,
+          "y": 18100,
+          "z": 0.0
+        },
+        "2": {
+          "x": 51980,
+          "y": 27010,
+          "z": 0.0
+        },
+        "3": {
+          "x": 56530,
+          "y": 27010,
+          "z": 0.0
+        },
+        "4": {
+          "x": 56530,
+          "y": 18100,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 0
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 1",
+      "componentNo": 1,
+      "cargoLabel": "Tower",
+      "length": 8910,
+      "width": 4550,
+      "height": 4640,
+      "weight": 72.6,
+      "Layer": 4,
+      "coordinate": {
+        "1": {
+          "x": 77476,
+          "y": 708,
+          "z": 0.0
+        },
+        "2": {
+          "x": 77476,
+          "y": 5258,
+          "z": 0.0
+        },
+        "3": {
+          "x": 86386,
+          "y": 5258,
+          "z": 0.0
+        },
+        "4": {
+          "x": 86386,
+          "y": 708,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 1",
+      "componentNo": 1,
+      "cargoLabel": "Tower",
+      "length": 8910,
+      "width": 4550,
+      "height": 4640,
+      "weight": 72.6,
+      "Layer": 4,
+      "coordinate": {
+        "1": {
+          "x": 77476,
+          "y": 5358,
+          "z": 0.0
+        },
+        "2": {
+          "x": 77476,
+          "y": 9908,
+          "z": 0.0
+        },
+        "3": {
+          "x": 86386,
+          "y": 9908,
+          "z": 0.0
+        },
+        "4": {
+          "x": 86386,
+          "y": 5358,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 1",
+      "componentNo": 1,
+      "cargoLabel": "Tower",
+      "length": 8910,
+      "width": 4550,
+      "height": 4640,
+      "weight": 72.6,
+      "Layer": 4,
+      "coordinate": {
+        "1": {
+          "x": 77476,
+          "y": 10008,
+          "z": 0.0
+        },
+        "2": {
+          "x": 77476,
+          "y": 14558,
+          "z": 0.0
+        },
+        "3": {
+          "x": 86386,
+          "y": 14558,
+          "z": 0.0
+        },
+        "4": {
+          "x": 86386,
+          "y": 10008,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 1",
+      "componentNo": 1,
+      "cargoLabel": "Tower",
+      "length": 8910,
+      "width": 4550,
+      "height": 4640,
+      "weight": 72.6,
+      "Layer": 4,
+      "coordinate": {
+        "1": {
+          "x": 77476,
+          "y": 14658,
+          "z": 0.0
+        },
+        "2": {
+          "x": 77476,
+          "y": 19208,
+          "z": 0.0
+        },
+        "3": {
+          "x": 86386,
+          "y": 19208,
+          "z": 0.0
+        },
+        "4": {
+          "x": 86386,
+          "y": 14658,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 1",
+      "componentNo": 1,
+      "cargoLabel": "Tower",
+      "length": 8910,
+      "width": 4550,
+      "height": 4640,
+      "weight": 72.6,
+      "Layer": 4,
+      "coordinate": {
+        "1": {
+          "x": 77476,
+          "y": 19308,
+          "z": 0.0
+        },
+        "2": {
+          "x": 77476,
+          "y": 23858,
+          "z": 0.0
+        },
+        "3": {
+          "x": 86386,
+          "y": 23858,
+          "z": 0.0
+        },
+        "4": {
+          "x": 86386,
+          "y": 19308,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 1",
+      "componentNo": 1,
+      "cargoLabel": "Tower",
+      "length": 8910,
+      "width": 4550,
+      "height": 4640,
+      "weight": 72.6,
+      "Layer": 4,
+      "coordinate": {
+        "1": {
+          "x": 77476,
+          "y": 23958,
+          "z": 0.0
+        },
+        "2": {
+          "x": 77476,
+          "y": 28508,
+          "z": 0.0
+        },
+        "3": {
+          "x": 86386,
+          "y": 28508,
+          "z": 0.0
+        },
+        "4": {
+          "x": 86386,
+          "y": 23958,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 2",
+      "componentNo": 2,
+      "cargoLabel": "Tower",
+      "length": 12770,
+      "width": 4550,
+      "height": 4640,
+      "weight": 67.8,
+      "Layer": 1,
+      "coordinate": {
+        "1": {
+          "x": 0,
+          "y": 0,
+          "z": 0.0
+        },
+        "2": {
+          "x": 0,
+          "y": 4550,
+          "z": 0.0
+        },
+        "3": {
+          "x": 12770,
+          "y": 4550,
+          "z": 0.0
+        },
+        "4": {
+          "x": 12770,
+          "y": 0,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 2",
+      "componentNo": 2,
+      "cargoLabel": "Tower",
+      "length": 12770,
+      "width": 4550,
+      "height": 4640,
+      "weight": 67.8,
+      "Layer": 1,
+      "coordinate": {
+        "1": {
+          "x": 0,
+          "y": 4650,
+          "z": 0.0
+        },
+        "2": {
+          "x": 0,
+          "y": 9200,
+          "z": 0.0
+        },
+        "3": {
+          "x": 12770,
+          "y": 9200,
+          "z": 0.0
+        },
+        "4": {
+          "x": 12770,
+          "y": 4650,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 2",
+      "componentNo": 2,
+      "cargoLabel": "Tower",
+      "length": 12770,
+      "width": 4550,
+      "height": 4640,
+      "weight": 67.8,
+      "Layer": 1,
+      "coordinate": {
+        "1": {
+          "x": 0,
+          "y": 9300,
+          "z": 0.0
+        },
+        "2": {
+          "x": 0,
+          "y": 13850,
+          "z": 0.0
+        },
+        "3": {
+          "x": 12770,
+          "y": 13850,
+          "z": 0.0
+        },
+        "4": {
+          "x": 12770,
+          "y": 9300,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 2",
+      "componentNo": 2,
+      "cargoLabel": "Tower",
+      "length": 12770,
+      "width": 4550,
+      "height": 4640,
+      "weight": 67.8,
+      "Layer": 1,
+      "coordinate": {
+        "1": {
+          "x": 0,
+          "y": 13950,
+          "z": 0.0
+        },
+        "2": {
+          "x": 0,
+          "y": 18500,
+          "z": 0.0
+        },
+        "3": {
+          "x": 12770,
+          "y": 18500,
+          "z": 0.0
+        },
+        "4": {
+          "x": 12770,
+          "y": 13950,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 2",
+      "componentNo": 2,
+      "cargoLabel": "Tower",
+      "length": 12770,
+      "width": 4550,
+      "height": 4640,
+      "weight": 67.8,
+      "Layer": 1,
+      "coordinate": {
+        "1": {
+          "x": 0,
+          "y": 20925,
+          "z": 0.0
+        },
+        "2": {
+          "x": 0,
+          "y": 25475,
+          "z": 0.0
+        },
+        "3": {
+          "x": 12770,
+          "y": 25475,
+          "z": 0.0
+        },
+        "4": {
+          "x": 12770,
+          "y": 20925,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 2",
+      "componentNo": 2,
+      "cargoLabel": "Tower",
+      "length": 12770,
+      "width": 4550,
+      "height": 4640,
+      "weight": 67.8,
+      "Layer": 1,
+      "coordinate": {
+        "1": {
+          "x": 31977,
+          "y": 16275,
+          "z": 0.0
+        },
+        "2": {
+          "x": 31977,
+          "y": 20825,
+          "z": 0.0
+        },
+        "3": {
+          "x": 44747,
+          "y": 20825,
+          "z": 0.0
+        },
+        "4": {
+          "x": 44747,
+          "y": 16275,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 2",
+      "componentNo": 2,
+      "cargoLabel": "Tower",
+      "length": 12770,
+      "width": 4550,
+      "height": 4640,
+      "weight": 67.8,
+      "Layer": 1,
+      "coordinate": {
+        "1": {
+          "x": 31977,
+          "y": 20925,
+          "z": 0.0
+        },
+        "2": {
+          "x": 31977,
+          "y": 25475,
+          "z": 0.0
+        },
+        "3": {
+          "x": 44747,
+          "y": 25475,
+          "z": 0.0
+        },
+        "4": {
+          "x": 44747,
+          "y": 20925,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 2",
+      "componentNo": 2,
+      "cargoLabel": "Tower",
+      "length": 12770,
+      "width": 4550,
+      "height": 4640,
+      "weight": 67.8,
+      "Layer": 1,
+      "coordinate": {
+        "1": {
+          "x": 45247,
+          "y": 16275,
+          "z": 0.0
+        },
+        "2": {
+          "x": 45247,
+          "y": 20825,
+          "z": 0.0
+        },
+        "3": {
+          "x": 58017,
+          "y": 20825,
+          "z": 0.0
+        },
+        "4": {
+          "x": 58017,
+          "y": 16275,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 2",
+      "componentNo": 2,
+      "cargoLabel": "Tower",
+      "length": 12770,
+      "width": 4550,
+      "height": 4640,
+      "weight": 67.8,
+      "Layer": 1,
+      "coordinate": {
+        "1": {
+          "x": 45247,
+          "y": 20925,
+          "z": 0.0
+        },
+        "2": {
+          "x": 45247,
+          "y": 25475,
+          "z": 0.0
+        },
+        "3": {
+          "x": 58017,
+          "y": 25475,
+          "z": 0.0
+        },
+        "4": {
+          "x": 58017,
+          "y": 20925,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 2",
+      "componentNo": 2,
+      "cargoLabel": "Tower",
+      "length": 12770,
+      "width": 4550,
+      "height": 4640,
+      "weight": 67.8,
+      "Layer": 1,
+      "coordinate": {
+        "1": {
+          "x": 58517,
+          "y": 16275,
+          "z": 0.0
+        },
+        "2": {
+          "x": 58517,
+          "y": 20825,
+          "z": 0.0
+        },
+        "3": {
+          "x": 71287,
+          "y": 20825,
+          "z": 0.0
+        },
+        "4": {
+          "x": 71287,
+          "y": 16275,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 2",
+      "componentNo": 2,
+      "cargoLabel": "Tower",
+      "length": 12770,
+      "width": 4550,
+      "height": 4640,
+      "weight": 67.8,
+      "Layer": 1,
+      "coordinate": {
+        "1": {
+          "x": 58517,
+          "y": 20925,
+          "z": 0.0
+        },
+        "2": {
+          "x": 58517,
+          "y": 25475,
+          "z": 0.0
+        },
+        "3": {
+          "x": 71287,
+          "y": 25475,
+          "z": 0.0
+        },
+        "4": {
+          "x": 71287,
+          "y": 20925,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 2",
+      "componentNo": 2,
+      "cargoLabel": "Tower",
+      "length": 12770,
+      "width": 4550,
+      "height": 4640,
+      "weight": 67.8,
+      "Layer": 1,
+      "coordinate": {
+        "1": {
+          "x": 73797,
+          "y": 0,
+          "z": 0.0
+        },
+        "2": {
+          "x": 73797,
+          "y": 4550,
+          "z": 0.0
+        },
+        "3": {
+          "x": 86567,
+          "y": 4550,
+          "z": 0.0
+        },
+        "4": {
+          "x": 86567,
+          "y": 0,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 2",
+      "componentNo": 2,
+      "cargoLabel": "Tower",
+      "length": 12770,
+      "width": 4550,
+      "height": 4640,
+      "weight": 67.8,
+      "Layer": 1,
+      "coordinate": {
+        "1": {
+          "x": 73797,
+          "y": 4650,
+          "z": 0.0
+        },
+        "2": {
+          "x": 73797,
+          "y": 9200,
+          "z": 0.0
+        },
+        "3": {
+          "x": 86567,
+          "y": 9200,
+          "z": 0.0
+        },
+        "4": {
+          "x": 86567,
+          "y": 4650,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 2",
+      "componentNo": 2,
+      "cargoLabel": "Tower",
+      "length": 12770,
+      "width": 4550,
+      "height": 4640,
+      "weight": 67.8,
+      "Layer": 1,
+      "coordinate": {
+        "1": {
+          "x": 73797,
+          "y": 9300,
+          "z": 0.0
+        },
+        "2": {
+          "x": 73797,
+          "y": 13850,
+          "z": 0.0
+        },
+        "3": {
+          "x": 86567,
+          "y": 13850,
+          "z": 0.0
+        },
+        "4": {
+          "x": 86567,
+          "y": 9300,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 2",
+      "componentNo": 2,
+      "cargoLabel": "Tower",
+      "length": 12770,
+      "width": 4550,
+      "height": 4640,
+      "weight": 67.8,
+      "Layer": 1,
+      "coordinate": {
+        "1": {
+          "x": 73797,
+          "y": 16275,
+          "z": 0.0
+        },
+        "2": {
+          "x": 73797,
+          "y": 20825,
+          "z": 0.0
+        },
+        "3": {
+          "x": 86567,
+          "y": 20825,
+          "z": 0.0
+        },
+        "4": {
+          "x": 86567,
+          "y": 16275,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 2",
+      "componentNo": 2,
+      "cargoLabel": "Tower",
+      "length": 12770,
+      "width": 4550,
+      "height": 4640,
+      "weight": 67.8,
+      "Layer": 1,
+      "coordinate": {
+        "1": {
+          "x": 73797,
+          "y": 20925,
+          "z": 0.0
+        },
+        "2": {
+          "x": 73797,
+          "y": 25475,
+          "z": 0.0
+        },
+        "3": {
+          "x": 86567,
+          "y": 25475,
+          "z": 0.0
+        },
+        "4": {
+          "x": 86567,
+          "y": 20925,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 2",
+      "componentNo": 2,
+      "cargoLabel": "Tower",
+      "length": 12770,
+      "width": 4550,
+      "height": 4640,
+      "weight": 67.8,
+      "Layer": 3,
+      "coordinate": {
+        "1": {
+          "x": 56532,
+          "y": 4730,
+          "z": 0.0
+        },
+        "2": {
+          "x": 56532,
+          "y": 9280,
+          "z": 0.0
+        },
+        "3": {
+          "x": 69302,
+          "y": 9280,
+          "z": 0.0
+        },
+        "4": {
+          "x": 69302,
+          "y": 4730,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 2",
+      "componentNo": 2,
+      "cargoLabel": "Tower",
+      "length": 12770,
+      "width": 4550,
+      "height": 4640,
+      "weight": 67.8,
+      "Layer": 4,
+      "coordinate": {
+        "1": {
+          "x": 118926,
+          "y": 12028,
+          "z": 0.0
+        },
+        "2": {
+          "x": 118926,
+          "y": 24798,
+          "z": 0.0
+        },
+        "3": {
+          "x": 123476,
+          "y": 24798,
+          "z": 0.0
+        },
+        "4": {
+          "x": 123476,
+          "y": 12028,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 0
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 3",
+      "componentNo": 3,
+      "cargoLabel": "Tower",
+      "length": 16130,
+      "width": 4550,
+      "height": 4640,
+      "weight": 68.0,
+      "Layer": 1,
+      "coordinate": {
+        "1": {
+          "x": 13466,
+          "y": 0,
+          "z": 0.0
+        },
+        "2": {
+          "x": 13466,
+          "y": 16130,
+          "z": 0.0
+        },
+        "3": {
+          "x": 18016,
+          "y": 16130,
+          "z": 0.0
+        },
+        "4": {
+          "x": 18016,
+          "y": 0,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 0
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 3",
+      "componentNo": 3,
+      "cargoLabel": "Tower",
+      "length": 16130,
+      "width": 4550,
+      "height": 4640,
+      "weight": 68.0,
+      "Layer": 1,
+      "coordinate": {
+        "1": {
+          "x": 31977,
+          "y": 0,
+          "z": 0.0
+        },
+        "2": {
+          "x": 31977,
+          "y": 4550,
+          "z": 0.0
+        },
+        "3": {
+          "x": 48107,
+          "y": 4550,
+          "z": 0.0
+        },
+        "4": {
+          "x": 48107,
+          "y": 0,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 3",
+      "componentNo": 3,
+      "cargoLabel": "Tower",
+      "length": 16130,
+      "width": 4550,
+      "height": 4640,
+      "weight": 68.0,
+      "Layer": 1,
+      "coordinate": {
+        "1": {
+          "x": 48607,
+          "y": 0,
+          "z": 0.0
+        },
+        "2": {
+          "x": 48607,
+          "y": 4550,
+          "z": 0.0
+        },
+        "3": {
+          "x": 64737,
+          "y": 4550,
+          "z": 0.0
+        },
+        "4": {
+          "x": 64737,
+          "y": 0,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 3",
+      "componentNo": 3,
+      "cargoLabel": "Tower",
+      "length": 16130,
+      "width": 4550,
+      "height": 4640,
+      "weight": 68.0,
+      "Layer": 1,
+      "coordinate": {
+        "1": {
+          "x": 31977,
+          "y": 6975,
+          "z": 0.0
+        },
+        "2": {
+          "x": 31977,
+          "y": 11525,
+          "z": 0.0
+        },
+        "3": {
+          "x": 48107,
+          "y": 11525,
+          "z": 0.0
+        },
+        "4": {
+          "x": 48107,
+          "y": 6975,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 3",
+      "componentNo": 3,
+      "cargoLabel": "Tower",
+      "length": 16130,
+      "width": 4550,
+      "height": 4640,
+      "weight": 68.0,
+      "Layer": 1,
+      "coordinate": {
+        "1": {
+          "x": 31977,
+          "y": 11625,
+          "z": 0.0
+        },
+        "2": {
+          "x": 31977,
+          "y": 16175,
+          "z": 0.0
+        },
+        "3": {
+          "x": 48107,
+          "y": 16175,
+          "z": 0.0
+        },
+        "4": {
+          "x": 48107,
+          "y": 11625,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 3",
+      "componentNo": 3,
+      "cargoLabel": "Tower",
+      "length": 16130,
+      "width": 4550,
+      "height": 4640,
+      "weight": 68.0,
+      "Layer": 1,
+      "coordinate": {
+        "1": {
+          "x": 48607,
+          "y": 6975,
+          "z": 0.0
+        },
+        "2": {
+          "x": 48607,
+          "y": 11525,
+          "z": 0.0
+        },
+        "3": {
+          "x": 64737,
+          "y": 11525,
+          "z": 0.0
+        },
+        "4": {
+          "x": 64737,
+          "y": 6975,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 3",
+      "componentNo": 3,
+      "cargoLabel": "Tower",
+      "length": 16130,
+      "width": 4550,
+      "height": 4640,
+      "weight": 68.0,
+      "Layer": 1,
+      "coordinate": {
+        "1": {
+          "x": 48607,
+          "y": 11625,
+          "z": 0.0
+        },
+        "2": {
+          "x": 48607,
+          "y": 16175,
+          "z": 0.0
+        },
+        "3": {
+          "x": 64737,
+          "y": 16175,
+          "z": 0.0
+        },
+        "4": {
+          "x": 64737,
+          "y": 11625,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 3",
+      "componentNo": 3,
+      "cargoLabel": "Tower",
+      "length": 16130,
+      "width": 4550,
+      "height": 4640,
+      "weight": 68.0,
+      "Layer": 1,
+      "coordinate": {
+        "1": {
+          "x": 65643,
+          "y": 0,
+          "z": 0.0
+        },
+        "2": {
+          "x": 65643,
+          "y": 16130,
+          "z": 0.0
+        },
+        "3": {
+          "x": 70193,
+          "y": 16130,
+          "z": 0.0
+        },
+        "4": {
+          "x": 70193,
+          "y": 0,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 0
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 3",
+      "componentNo": 3,
+      "cargoLabel": "Tower",
+      "length": 16130,
+      "width": 4550,
+      "height": 4640,
+      "weight": 68.0,
+      "Layer": 1,
+      "coordinate": {
+        "1": {
+          "x": 105780,
+          "y": 10769,
+          "z": 0.0
+        },
+        "2": {
+          "x": 105780,
+          "y": 15319,
+          "z": 0.0
+        },
+        "3": {
+          "x": 121910,
+          "y": 15319,
+          "z": 0.0
+        },
+        "4": {
+          "x": 121910,
+          "y": 10769,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 3",
+      "componentNo": 3,
+      "cargoLabel": "Tower",
+      "length": 16130,
+      "width": 4550,
+      "height": 4640,
+      "weight": 68.0,
+      "Layer": 2,
+      "coordinate": {
+        "1": {
+          "x": 85388,
+          "y": 4730,
+          "z": 0.0
+        },
+        "2": {
+          "x": 85388,
+          "y": 9280,
+          "z": 0.0
+        },
+        "3": {
+          "x": 101518,
+          "y": 9280,
+          "z": 0.0
+        },
+        "4": {
+          "x": 101518,
+          "y": 4730,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 3",
+      "componentNo": 3,
+      "cargoLabel": "Tower",
+      "length": 16130,
+      "width": 4550,
+      "height": 4640,
+      "weight": 68.0,
+      "Layer": 2,
+      "coordinate": {
+        "1": {
+          "x": 85388,
+          "y": 9380,
+          "z": 0.0
+        },
+        "2": {
+          "x": 85388,
+          "y": 13930,
+          "z": 0.0
+        },
+        "3": {
+          "x": 101518,
+          "y": 13930,
+          "z": 0.0
+        },
+        "4": {
+          "x": 101518,
+          "y": 9380,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 3",
+      "componentNo": 3,
+      "cargoLabel": "Tower",
+      "length": 16130,
+      "width": 4550,
+      "height": 4640,
+      "weight": 68.0,
+      "Layer": 2,
+      "coordinate": {
+        "1": {
+          "x": 87103,
+          "y": 80,
+          "z": 0.0
+        },
+        "2": {
+          "x": 87103,
+          "y": 4630,
+          "z": 0.0
+        },
+        "3": {
+          "x": 103233,
+          "y": 4630,
+          "z": 0.0
+        },
+        "4": {
+          "x": 103233,
+          "y": 80,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 3",
+      "componentNo": 3,
+      "cargoLabel": "Tower",
+      "length": 16130,
+      "width": 4550,
+      "height": 4640,
+      "weight": 68.0,
+      "Layer": 2,
+      "coordinate": {
+        "1": {
+          "x": 87103,
+          "y": 14030,
+          "z": 0.0
+        },
+        "2": {
+          "x": 87103,
+          "y": 18580,
+          "z": 0.0
+        },
+        "3": {
+          "x": 103233,
+          "y": 18580,
+          "z": 0.0
+        },
+        "4": {
+          "x": 103233,
+          "y": 14030,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 3",
+      "componentNo": 3,
+      "cargoLabel": "Tower",
+      "length": 16130,
+      "width": 4550,
+      "height": 4640,
+      "weight": 68.0,
+      "Layer": 2,
+      "coordinate": {
+        "1": {
+          "x": 87103,
+          "y": 18680,
+          "z": 0.0
+        },
+        "2": {
+          "x": 87103,
+          "y": 23230,
+          "z": 0.0
+        },
+        "3": {
+          "x": 103233,
+          "y": 23230,
+          "z": 0.0
+        },
+        "4": {
+          "x": 103233,
+          "y": 18680,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 3",
+      "componentNo": 3,
+      "cargoLabel": "Tower",
+      "length": 16130,
+      "width": 4550,
+      "height": 4640,
+      "weight": 68.0,
+      "Layer": 3,
+      "coordinate": {
+        "1": {
+          "x": 33788,
+          "y": 9380,
+          "z": 0.0
+        },
+        "2": {
+          "x": 33788,
+          "y": 13930,
+          "z": 0.0
+        },
+        "3": {
+          "x": 49918,
+          "y": 13930,
+          "z": 0.0
+        },
+        "4": {
+          "x": 49918,
+          "y": 9380,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 3",
+      "componentNo": 3,
+      "cargoLabel": "Tower",
+      "length": 16130,
+      "width": 4550,
+      "height": 4640,
+      "weight": 68.0,
+      "Layer": 3,
+      "coordinate": {
+        "1": {
+          "x": 33788,
+          "y": 16355,
+          "z": 0.0
+        },
+        "2": {
+          "x": 33788,
+          "y": 20905,
+          "z": 0.0
+        },
+        "3": {
+          "x": 49918,
+          "y": 20905,
+          "z": 0.0
+        },
+        "4": {
+          "x": 49918,
+          "y": 16355,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 3",
+      "componentNo": 3,
+      "cargoLabel": "Tower",
+      "length": 16130,
+      "width": 4550,
+      "height": 4640,
+      "weight": 68.0,
+      "Layer": 3,
+      "coordinate": {
+        "1": {
+          "x": 33788,
+          "y": 21005,
+          "z": 0.0
+        },
+        "2": {
+          "x": 33788,
+          "y": 25555,
+          "z": 0.0
+        },
+        "3": {
+          "x": 49918,
+          "y": 25555,
+          "z": 0.0
+        },
+        "4": {
+          "x": 49918,
+          "y": 21005,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 3",
+      "componentNo": 3,
+      "cargoLabel": "Tower",
+      "length": 16130,
+      "width": 4550,
+      "height": 4640,
+      "weight": 68.0,
+      "Layer": 3,
+      "coordinate": {
+        "1": {
+          "x": 35498,
+          "y": 80,
+          "z": 0.0
+        },
+        "2": {
+          "x": 35498,
+          "y": 4630,
+          "z": 0.0
+        },
+        "3": {
+          "x": 51628,
+          "y": 4630,
+          "z": 0.0
+        },
+        "4": {
+          "x": 51628,
+          "y": 80,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 3",
+      "componentNo": 3,
+      "cargoLabel": "Tower",
+      "length": 16130,
+      "width": 4550,
+      "height": 4640,
+      "weight": 68.0,
+      "Layer": 3,
+      "coordinate": {
+        "1": {
+          "x": 53390,
+          "y": 80,
+          "z": 0.0
+        },
+        "2": {
+          "x": 53390,
+          "y": 4630,
+          "z": 0.0
+        },
+        "3": {
+          "x": 69520,
+          "y": 4630,
+          "z": 0.0
+        },
+        "4": {
+          "x": 69520,
+          "y": 80,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 3",
+      "componentNo": 3,
+      "cargoLabel": "Tower",
+      "length": 16130,
+      "width": 4550,
+      "height": 4640,
+      "weight": 68.0,
+      "Layer": 3,
+      "coordinate": {
+        "1": {
+          "x": 53390,
+          "y": 9380,
+          "z": 0.0
+        },
+        "2": {
+          "x": 53390,
+          "y": 13930,
+          "z": 0.0
+        },
+        "3": {
+          "x": 69520,
+          "y": 13930,
+          "z": 0.0
+        },
+        "4": {
+          "x": 69520,
+          "y": 9380,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 4",
+      "componentNo": 4,
+      "cargoLabel": "Tower",
+      "length": 21170,
+      "width": 4550,
+      "height": 4640,
+      "weight": 68.9,
+      "Layer": 1,
+      "coordinate": {
+        "1": {
+          "x": 105780,
+          "y": 15419,
+          "z": 0.0
+        },
+        "2": {
+          "x": 105780,
+          "y": 19969,
+          "z": 0.0
+        },
+        "3": {
+          "x": 126950,
+          "y": 19969,
+          "z": 0.0
+        },
+        "4": {
+          "x": 126950,
+          "y": 15419,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 4",
+      "componentNo": 4,
+      "cargoLabel": "Tower",
+      "length": 21170,
+      "width": 4550,
+      "height": 4640,
+      "weight": 68.9,
+      "Layer": 3,
+      "coordinate": {
+        "1": {
+          "x": 33719,
+          "y": 4730,
+          "z": 0.0
+        },
+        "2": {
+          "x": 33719,
+          "y": 9280,
+          "z": 0.0
+        },
+        "3": {
+          "x": 54889,
+          "y": 9280,
+          "z": 0.0
+        },
+        "4": {
+          "x": 54889,
+          "y": 4730,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 4",
+      "componentNo": 4,
+      "cargoLabel": "Tower",
+      "length": 21170,
+      "width": 4550,
+      "height": 4640,
+      "weight": 68.9,
+      "Layer": 4,
+      "coordinate": {
+        "1": {
+          "x": -40149,
+          "y": 708,
+          "z": 0.0
+        },
+        "2": {
+          "x": -40149,
+          "y": 5258,
+          "z": 0.0
+        },
+        "3": {
+          "x": -18979,
+          "y": 5258,
+          "z": 0.0
+        },
+        "4": {
+          "x": -18979,
+          "y": 708,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 4",
+      "componentNo": 4,
+      "cargoLabel": "Tower",
+      "length": 21170,
+      "width": 4550,
+      "height": 4640,
+      "weight": 68.9,
+      "Layer": 4,
+      "coordinate": {
+        "1": {
+          "x": -40149,
+          "y": 5358,
+          "z": 0.0
+        },
+        "2": {
+          "x": -40149,
+          "y": 9908,
+          "z": 0.0
+        },
+        "3": {
+          "x": -18979,
+          "y": 9908,
+          "z": 0.0
+        },
+        "4": {
+          "x": -18979,
+          "y": 5358,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 4",
+      "componentNo": 4,
+      "cargoLabel": "Tower",
+      "length": 21170,
+      "width": 4550,
+      "height": 4640,
+      "weight": 68.9,
+      "Layer": 4,
+      "coordinate": {
+        "1": {
+          "x": -40149,
+          "y": 10008,
+          "z": 0.0
+        },
+        "2": {
+          "x": -40149,
+          "y": 14558,
+          "z": 0.0
+        },
+        "3": {
+          "x": -18979,
+          "y": 14558,
+          "z": 0.0
+        },
+        "4": {
+          "x": -18979,
+          "y": 10008,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 4",
+      "componentNo": 4,
+      "cargoLabel": "Tower",
+      "length": 21170,
+      "width": 4550,
+      "height": 4640,
+      "weight": 68.9,
+      "Layer": 4,
+      "coordinate": {
+        "1": {
+          "x": -40149,
+          "y": 14658,
+          "z": 0.0
+        },
+        "2": {
+          "x": -40149,
+          "y": 19208,
+          "z": 0.0
+        },
+        "3": {
+          "x": -18979,
+          "y": 19208,
+          "z": 0.0
+        },
+        "4": {
+          "x": -18979,
+          "y": 14658,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 4",
+      "componentNo": 4,
+      "cargoLabel": "Tower",
+      "length": 21170,
+      "width": 4550,
+      "height": 4640,
+      "weight": 68.9,
+      "Layer": 4,
+      "coordinate": {
+        "1": {
+          "x": -40149,
+          "y": 19308,
+          "z": 0.0
+        },
+        "2": {
+          "x": -40149,
+          "y": 23858,
+          "z": 0.0
+        },
+        "3": {
+          "x": -18979,
+          "y": 23858,
+          "z": 0.0
+        },
+        "4": {
+          "x": -18979,
+          "y": 19308,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 4",
+      "componentNo": 4,
+      "cargoLabel": "Tower",
+      "length": 21170,
+      "width": 4550,
+      "height": 4640,
+      "weight": 68.9,
+      "Layer": 4,
+      "coordinate": {
+        "1": {
+          "x": -40149,
+          "y": 23958,
+          "z": 0.0
+        },
+        "2": {
+          "x": -40149,
+          "y": 28508,
+          "z": 0.0
+        },
+        "3": {
+          "x": -18979,
+          "y": 28508,
+          "z": 0.0
+        },
+        "4": {
+          "x": -18979,
+          "y": 23958,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 4",
+      "componentNo": 4,
+      "cargoLabel": "Tower",
+      "length": 21170,
+      "width": 4550,
+      "height": 4640,
+      "weight": 68.9,
+      "Layer": 4,
+      "coordinate": {
+        "1": {
+          "x": 14026,
+          "y": 708,
+          "z": 0.0
+        },
+        "2": {
+          "x": 14026,
+          "y": 5258,
+          "z": 0.0
+        },
+        "3": {
+          "x": 35196,
+          "y": 5258,
+          "z": 0.0
+        },
+        "4": {
+          "x": 35196,
+          "y": 708,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 4",
+      "componentNo": 4,
+      "cargoLabel": "Tower",
+      "length": 21170,
+      "width": 4550,
+      "height": 4640,
+      "weight": 68.9,
+      "Layer": 4,
+      "coordinate": {
+        "1": {
+          "x": 14026,
+          "y": 5358,
+          "z": 0.0
+        },
+        "2": {
+          "x": 14026,
+          "y": 9908,
+          "z": 0.0
+        },
+        "3": {
+          "x": 35196,
+          "y": 9908,
+          "z": 0.0
+        },
+        "4": {
+          "x": 35196,
+          "y": 5358,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 4",
+      "componentNo": 4,
+      "cargoLabel": "Tower",
+      "length": 21170,
+      "width": 4550,
+      "height": 4640,
+      "weight": 68.9,
+      "Layer": 4,
+      "coordinate": {
+        "1": {
+          "x": 14026,
+          "y": 10008,
+          "z": 0.0
+        },
+        "2": {
+          "x": 14026,
+          "y": 14558,
+          "z": 0.0
+        },
+        "3": {
+          "x": 35196,
+          "y": 14558,
+          "z": 0.0
+        },
+        "4": {
+          "x": 35196,
+          "y": 10008,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 4",
+      "componentNo": 4,
+      "cargoLabel": "Tower",
+      "length": 21170,
+      "width": 4550,
+      "height": 4640,
+      "weight": 68.9,
+      "Layer": 4,
+      "coordinate": {
+        "1": {
+          "x": 14026,
+          "y": 14658,
+          "z": 0.0
+        },
+        "2": {
+          "x": 14026,
+          "y": 19208,
+          "z": 0.0
+        },
+        "3": {
+          "x": 35196,
+          "y": 19208,
+          "z": 0.0
+        },
+        "4": {
+          "x": 35196,
+          "y": 14658,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 4",
+      "componentNo": 4,
+      "cargoLabel": "Tower",
+      "length": 21170,
+      "width": 4550,
+      "height": 4640,
+      "weight": 68.9,
+      "Layer": 4,
+      "coordinate": {
+        "1": {
+          "x": 14026,
+          "y": 19308,
+          "z": 0.0
+        },
+        "2": {
+          "x": 14026,
+          "y": 23858,
+          "z": 0.0
+        },
+        "3": {
+          "x": 35196,
+          "y": 23858,
+          "z": 0.0
+        },
+        "4": {
+          "x": 35196,
+          "y": 19308,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 4",
+      "componentNo": 4,
+      "cargoLabel": "Tower",
+      "length": 21170,
+      "width": 4550,
+      "height": 4640,
+      "weight": 68.9,
+      "Layer": 4,
+      "coordinate": {
+        "1": {
+          "x": 14026,
+          "y": 23958,
+          "z": 0.0
+        },
+        "2": {
+          "x": 14026,
+          "y": 28508,
+          "z": 0.0
+        },
+        "3": {
+          "x": 35196,
+          "y": 28508,
+          "z": 0.0
+        },
+        "4": {
+          "x": 35196,
+          "y": 23958,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 5",
+      "componentNo": 5,
+      "cargoLabel": "Tower",
+      "length": 26210,
+      "width": 4550,
+      "height": 4630,
+      "weight": 64.1,
+      "Layer": 1,
+      "coordinate": {
+        "1": {
+          "x": 18516,
+          "y": 0,
+          "z": 0.0
+        },
+        "2": {
+          "x": 18516,
+          "y": 26210,
+          "z": 0.0
+        },
+        "3": {
+          "x": 23066,
+          "y": 26210,
+          "z": 0.0
+        },
+        "4": {
+          "x": 23066,
+          "y": 0,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 0
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 5",
+      "componentNo": 5,
+      "cargoLabel": "Tower",
+      "length": 26210,
+      "width": 4550,
+      "height": 4630,
+      "weight": 64.1,
+      "Layer": 1,
+      "coordinate": {
+        "1": {
+          "x": 23566,
+          "y": 0,
+          "z": 0.0
+        },
+        "2": {
+          "x": 23566,
+          "y": 26210,
+          "z": 0.0
+        },
+        "3": {
+          "x": 28116,
+          "y": 26210,
+          "z": 0.0
+        },
+        "4": {
+          "x": 28116,
+          "y": 0,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 0
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 5",
+      "componentNo": 5,
+      "cargoLabel": "Tower",
+      "length": 26210,
+      "width": 4550,
+      "height": 4630,
+      "weight": 64.1,
+      "Layer": 1,
+      "coordinate": {
+        "1": {
+          "x": 87263,
+          "y": 0,
+          "z": 0.0
+        },
+        "2": {
+          "x": 87263,
+          "y": 26210,
+          "z": 0.0
+        },
+        "3": {
+          "x": 91813,
+          "y": 26210,
+          "z": 0.0
+        },
+        "4": {
+          "x": 91813,
+          "y": 0,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 0
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 5",
+      "componentNo": 5,
+      "cargoLabel": "Tower",
+      "length": 26210,
+      "width": 4550,
+      "height": 4630,
+      "weight": 64.1,
+      "Layer": 1,
+      "coordinate": {
+        "1": {
+          "x": 92313,
+          "y": 0,
+          "z": 0.0
+        },
+        "2": {
+          "x": 92313,
+          "y": 26210,
+          "z": 0.0
+        },
+        "3": {
+          "x": 96863,
+          "y": 26210,
+          "z": 0.0
+        },
+        "4": {
+          "x": 96863,
+          "y": 0,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 0
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 5",
+      "componentNo": 5,
+      "cargoLabel": "Tower",
+      "length": 26210,
+      "width": 4550,
+      "height": 4630,
+      "weight": 64.1,
+      "Layer": 1,
+      "coordinate": {
+        "1": {
+          "x": 97363,
+          "y": 0,
+          "z": 0.0
+        },
+        "2": {
+          "x": 97363,
+          "y": 26210,
+          "z": 0.0
+        },
+        "3": {
+          "x": 101913,
+          "y": 26210,
+          "z": 0.0
+        },
+        "4": {
+          "x": 101913,
+          "y": 0,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 0
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 5",
+      "componentNo": 5,
+      "cargoLabel": "Tower",
+      "length": 26210,
+      "width": 4550,
+      "height": 4630,
+      "weight": 64.1,
+      "Layer": 2,
+      "coordinate": {
+        "1": {
+          "x": 14783,
+          "y": 80,
+          "z": 0.0
+        },
+        "2": {
+          "x": 14783,
+          "y": 26290,
+          "z": 0.0
+        },
+        "3": {
+          "x": 19333,
+          "y": 26290,
+          "z": 0.0
+        },
+        "4": {
+          "x": 19333,
+          "y": 80,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 0
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 5",
+      "componentNo": 5,
+      "cargoLabel": "Tower",
+      "length": 26210,
+      "width": 4550,
+      "height": 4630,
+      "weight": 64.1,
+      "Layer": 2,
+      "coordinate": {
+        "1": {
+          "x": 24881,
+          "y": 80,
+          "z": 0.0
+        },
+        "2": {
+          "x": 24881,
+          "y": 26290,
+          "z": 0.0
+        },
+        "3": {
+          "x": 29431,
+          "y": 26290,
+          "z": 0.0
+        },
+        "4": {
+          "x": 29431,
+          "y": 80,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 0
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 5",
+      "componentNo": 5,
+      "cargoLabel": "Tower",
+      "length": 26210,
+      "width": 4550,
+      "height": 4630,
+      "weight": 64.1,
+      "Layer": 3,
+      "coordinate": {
+        "1": {
+          "x": 1650,
+          "y": 16355,
+          "z": 0.0
+        },
+        "2": {
+          "x": 1650,
+          "y": 20905,
+          "z": 0.0
+        },
+        "3": {
+          "x": 27860,
+          "y": 20905,
+          "z": 0.0
+        },
+        "4": {
+          "x": 27860,
+          "y": 16355,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 5",
+      "componentNo": 5,
+      "cargoLabel": "Tower",
+      "length": 26210,
+      "width": 4550,
+      "height": 4630,
+      "weight": 64.1,
+      "Layer": 3,
+      "coordinate": {
+        "1": {
+          "x": 1650,
+          "y": 21005,
+          "z": 0.0
+        },
+        "2": {
+          "x": 1650,
+          "y": 25555,
+          "z": 0.0
+        },
+        "3": {
+          "x": 27860,
+          "y": 25555,
+          "z": 0.0
+        },
+        "4": {
+          "x": 27860,
+          "y": 21005,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 5",
+      "componentNo": 5,
+      "cargoLabel": "Tower",
+      "length": 26210,
+      "width": 4550,
+      "height": 4630,
+      "weight": 64.1,
+      "Layer": 3,
+      "coordinate": {
+        "1": {
+          "x": 75452,
+          "y": 4730,
+          "z": 0.0
+        },
+        "2": {
+          "x": 75452,
+          "y": 9280,
+          "z": 0.0
+        },
+        "3": {
+          "x": 101662,
+          "y": 9280,
+          "z": 0.0
+        },
+        "4": {
+          "x": 101662,
+          "y": 4730,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 5",
+      "componentNo": 5,
+      "cargoLabel": "Tower",
+      "length": 26210,
+      "width": 4550,
+      "height": 4630,
+      "weight": 64.1,
+      "Layer": 3,
+      "coordinate": {
+        "1": {
+          "x": 75452,
+          "y": 9380,
+          "z": 0.0
+        },
+        "2": {
+          "x": 75452,
+          "y": 13930,
+          "z": 0.0
+        },
+        "3": {
+          "x": 101662,
+          "y": 13930,
+          "z": 0.0
+        },
+        "4": {
+          "x": 101662,
+          "y": 9380,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 5",
+      "componentNo": 5,
+      "cargoLabel": "Tower",
+      "length": 26210,
+      "width": 4550,
+      "height": 4630,
+      "weight": 64.1,
+      "Layer": 3,
+      "coordinate": {
+        "1": {
+          "x": 75452,
+          "y": 14030,
+          "z": 0.0
+        },
+        "2": {
+          "x": 75452,
+          "y": 18580,
+          "z": 0.0
+        },
+        "3": {
+          "x": 101662,
+          "y": 18580,
+          "z": 0.0
+        },
+        "4": {
+          "x": 101662,
+          "y": 14030,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 5",
+      "componentNo": 5,
+      "cargoLabel": "Tower",
+      "length": 26210,
+      "width": 4550,
+      "height": 4630,
+      "weight": 64.1,
+      "Layer": 3,
+      "coordinate": {
+        "1": {
+          "x": 75452,
+          "y": 18680,
+          "z": 0.0
+        },
+        "2": {
+          "x": 75452,
+          "y": 23230,
+          "z": 0.0
+        },
+        "3": {
+          "x": 101662,
+          "y": 23230,
+          "z": 0.0
+        },
+        "4": {
+          "x": 101662,
+          "y": 18680,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 5",
+      "componentNo": 5,
+      "cargoLabel": "Tower",
+      "length": 26210,
+      "width": 4550,
+      "height": 4630,
+      "weight": 64.1,
+      "Layer": 4,
+      "coordinate": {
+        "1": {
+          "x": 39981,
+          "y": 708,
+          "z": 0.0
+        },
+        "2": {
+          "x": 39981,
+          "y": 5258,
+          "z": 0.0
+        },
+        "3": {
+          "x": 66191,
+          "y": 5258,
+          "z": 0.0
+        },
+        "4": {
+          "x": 66191,
+          "y": 708,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 5",
+      "componentNo": 5,
+      "cargoLabel": "Tower",
+      "length": 26210,
+      "width": 4550,
+      "height": 4630,
+      "weight": 64.1,
+      "Layer": 4,
+      "coordinate": {
+        "1": {
+          "x": 39981,
+          "y": 5358,
+          "z": 0.0
+        },
+        "2": {
+          "x": 39981,
+          "y": 9908,
+          "z": 0.0
+        },
+        "3": {
+          "x": 66191,
+          "y": 9908,
+          "z": 0.0
+        },
+        "4": {
+          "x": 66191,
+          "y": 5358,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 5",
+      "componentNo": 5,
+      "cargoLabel": "Tower",
+      "length": 26210,
+      "width": 4550,
+      "height": 4630,
+      "weight": 64.1,
+      "Layer": 4,
+      "coordinate": {
+        "1": {
+          "x": 39981,
+          "y": 10008,
+          "z": 0.0
+        },
+        "2": {
+          "x": 39981,
+          "y": 14558,
+          "z": 0.0
+        },
+        "3": {
+          "x": 66191,
+          "y": 14558,
+          "z": 0.0
+        },
+        "4": {
+          "x": 66191,
+          "y": 10008,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 5",
+      "componentNo": 5,
+      "cargoLabel": "Tower",
+      "length": 26210,
+      "width": 4550,
+      "height": 4630,
+      "weight": 64.1,
+      "Layer": 4,
+      "coordinate": {
+        "1": {
+          "x": 39981,
+          "y": 14658,
+          "z": 0.0
+        },
+        "2": {
+          "x": 39981,
+          "y": 19208,
+          "z": 0.0
+        },
+        "3": {
+          "x": 66191,
+          "y": 19208,
+          "z": 0.0
+        },
+        "4": {
+          "x": 66191,
+          "y": 14658,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 5",
+      "componentNo": 5,
+      "cargoLabel": "Tower",
+      "length": 26210,
+      "width": 4550,
+      "height": 4630,
+      "weight": 64.1,
+      "Layer": 4,
+      "coordinate": {
+        "1": {
+          "x": 39981,
+          "y": 19308,
+          "z": 0.0
+        },
+        "2": {
+          "x": 39981,
+          "y": 23858,
+          "z": 0.0
+        },
+        "3": {
+          "x": 66191,
+          "y": 23858,
+          "z": 0.0
+        },
+        "4": {
+          "x": 66191,
+          "y": 19308,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 5",
+      "componentNo": 5,
+      "cargoLabel": "Tower",
+      "length": 26210,
+      "width": 4550,
+      "height": 4630,
+      "weight": 64.1,
+      "Layer": 4,
+      "coordinate": {
+        "1": {
+          "x": 39981,
+          "y": 23958,
+          "z": 0.0
+        },
+        "2": {
+          "x": 39981,
+          "y": 28508,
+          "z": 0.0
+        },
+        "3": {
+          "x": 66191,
+          "y": 28508,
+          "z": 0.0
+        },
+        "4": {
+          "x": 66191,
+          "y": 23958,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 5",
+      "componentNo": 5,
+      "cargoLabel": "Tower",
+      "length": 26210,
+      "width": 4550,
+      "height": 4630,
+      "weight": 64.1,
+      "Layer": 4,
+      "coordinate": {
+        "1": {
+          "x": 93401,
+          "y": 6908,
+          "z": 0.0
+        },
+        "2": {
+          "x": 93401,
+          "y": 11458,
+          "z": 0.0
+        },
+        "3": {
+          "x": 119611,
+          "y": 11458,
+          "z": 0.0
+        },
+        "4": {
+          "x": 119611,
+          "y": 6908,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 6",
+      "componentNo": 6,
+      "cargoLabel": "Tower",
+      "length": 25450,
+      "width": 4540,
+      "height": 4630,
+      "weight": 55.6,
+      "Layer": 2,
+      "coordinate": {
+        "1": {
+          "x": 19835,
+          "y": 80,
+          "z": 0.0
+        },
+        "2": {
+          "x": 19835,
+          "y": 25530,
+          "z": 0.0
+        },
+        "3": {
+          "x": 24375,
+          "y": 25530,
+          "z": 0.0
+        },
+        "4": {
+          "x": 24375,
+          "y": 80,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 0
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 6",
+      "componentNo": 6,
+      "cargoLabel": "Tower",
+      "length": 25450,
+      "width": 4540,
+      "height": 4630,
+      "weight": 55.6,
+      "Layer": 2,
+      "coordinate": {
+        "1": {
+          "x": 66691,
+          "y": 80,
+          "z": 0.0
+        },
+        "2": {
+          "x": 66691,
+          "y": 25530,
+          "z": 0.0
+        },
+        "3": {
+          "x": 71231,
+          "y": 25530,
+          "z": 0.0
+        },
+        "4": {
+          "x": 71231,
+          "y": 80,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 0
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 6",
+      "componentNo": 6,
+      "cargoLabel": "Tower",
+      "length": 25450,
+      "width": 4540,
+      "height": 4630,
+      "weight": 55.6,
+      "Layer": 2,
+      "coordinate": {
+        "1": {
+          "x": 78932,
+          "y": 80,
+          "z": 0.0
+        },
+        "2": {
+          "x": 78932,
+          "y": 25530,
+          "z": 0.0
+        },
+        "3": {
+          "x": 83472,
+          "y": 25530,
+          "z": 0.0
+        },
+        "4": {
+          "x": 83472,
+          "y": 80,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 0
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 6",
+      "componentNo": 6,
+      "cargoLabel": "Tower",
+      "length": 25450,
+      "width": 4540,
+      "height": 4630,
+      "weight": 55.6,
+      "Layer": 3,
+      "coordinate": {
+        "1": {
+          "x": 2030,
+          "y": 80,
+          "z": 0.0
+        },
+        "2": {
+          "x": 2030,
+          "y": 4620,
+          "z": 0.0
+        },
+        "3": {
+          "x": 27480,
+          "y": 4620,
+          "z": 0.0
+        },
+        "4": {
+          "x": 27480,
+          "y": 80,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 6",
+      "componentNo": 6,
+      "cargoLabel": "Tower",
+      "length": 25450,
+      "width": 4540,
+      "height": 4630,
+      "weight": 55.6,
+      "Layer": 3,
+      "coordinate": {
+        "1": {
+          "x": 2030,
+          "y": 4720,
+          "z": 0.0
+        },
+        "2": {
+          "x": 2030,
+          "y": 9260,
+          "z": 0.0
+        },
+        "3": {
+          "x": 27480,
+          "y": 9260,
+          "z": 0.0
+        },
+        "4": {
+          "x": 27480,
+          "y": 4720,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 6",
+      "componentNo": 6,
+      "cargoLabel": "Tower",
+      "length": 25450,
+      "width": 4540,
+      "height": 4630,
+      "weight": 55.6,
+      "Layer": 3,
+      "coordinate": {
+        "1": {
+          "x": 2030,
+          "y": 11680,
+          "z": 0.0
+        },
+        "2": {
+          "x": 2030,
+          "y": 16220,
+          "z": 0.0
+        },
+        "3": {
+          "x": 27480,
+          "y": 16220,
+          "z": 0.0
+        },
+        "4": {
+          "x": 27480,
+          "y": 11680,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 6",
+      "componentNo": 6,
+      "cargoLabel": "Tower",
+      "length": 25450,
+      "width": 4540,
+      "height": 4630,
+      "weight": 55.6,
+      "Layer": 3,
+      "coordinate": {
+        "1": {
+          "x": 75832,
+          "y": 80,
+          "z": 0.0
+        },
+        "2": {
+          "x": 75832,
+          "y": 4620,
+          "z": 0.0
+        },
+        "3": {
+          "x": 101282,
+          "y": 4620,
+          "z": 0.0
+        },
+        "4": {
+          "x": 101282,
+          "y": 80,
+          "z": 0.0
+        }
+      },
+      "tier": 1,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 6",
+      "componentNo": 6,
+      "cargoLabel": "Tower",
+      "length": 25450,
+      "width": 4540,
+      "height": 4630,
+      "weight": 55.6,
+      "Layer": 4,
+      "coordinate": {
+        "1": {
+          "x": 89601,
+          "y": 13078,
+          "z": 0.0
+        },
+        "2": {
+          "x": 89601,
+          "y": 17618,
+          "z": 0.0
+        },
+        "3": {
+          "x": 115051,
+          "y": 17618,
+          "z": 0.0
+        },
+        "4": {
+          "x": 115051,
+          "y": 13078,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 6",
+      "componentNo": 6,
+      "cargoLabel": "Tower",
+      "length": 25450,
+      "width": 4540,
+      "height": 4630,
+      "weight": 55.6,
+      "Layer": 4,
+      "coordinate": {
+        "1": {
+          "x": 89601,
+          "y": 17718,
+          "z": 0.0
+        },
+        "2": {
+          "x": 89601,
+          "y": 22258,
+          "z": 0.0
+        },
+        "3": {
+          "x": 115051,
+          "y": 22258,
+          "z": 0.0
+        },
+        "4": {
+          "x": 115051,
+          "y": 17718,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 6",
+      "componentNo": 6,
+      "cargoLabel": "Tower",
+      "length": 25450,
+      "width": 4540,
+      "height": 4630,
+      "weight": 55.6,
+      "Layer": 4,
+      "coordinate": {
+        "1": {
+          "x": 89601,
+          "y": 22358,
+          "z": 0.0
+        },
+        "2": {
+          "x": 89601,
+          "y": 26898,
+          "z": 0.0
+        },
+        "3": {
+          "x": 115051,
+          "y": 26898,
+          "z": 0.0
+        },
+        "4": {
+          "x": 115051,
+          "y": 22358,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 6",
+      "componentNo": 6,
+      "cargoLabel": "Tower",
+      "length": 25450,
+      "width": 4540,
+      "height": 4630,
+      "weight": 55.6,
+      "Layer": 4,
+      "coordinate": {
+        "1": {
+          "x": -14199,
+          "y": 704,
+          "z": 0.0
+        },
+        "2": {
+          "x": -14199,
+          "y": 5244,
+          "z": 0.0
+        },
+        "3": {
+          "x": 11251,
+          "y": 5244,
+          "z": 0.0
+        },
+        "4": {
+          "x": 11251,
+          "y": 704,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 6",
+      "componentNo": 6,
+      "cargoLabel": "Tower",
+      "length": 25450,
+      "width": 4540,
+      "height": 4630,
+      "weight": 55.6,
+      "Layer": 4,
+      "coordinate": {
+        "1": {
+          "x": -14199,
+          "y": 5344,
+          "z": 0.0
+        },
+        "2": {
+          "x": -14199,
+          "y": 9884,
+          "z": 0.0
+        },
+        "3": {
+          "x": 11251,
+          "y": 9884,
+          "z": 0.0
+        },
+        "4": {
+          "x": 11251,
+          "y": 5344,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 6",
+      "componentNo": 6,
+      "cargoLabel": "Tower",
+      "length": 25450,
+      "width": 4540,
+      "height": 4630,
+      "weight": 55.6,
+      "Layer": 4,
+      "coordinate": {
+        "1": {
+          "x": -14199,
+          "y": 9984,
+          "z": 0.0
+        },
+        "2": {
+          "x": -14199,
+          "y": 14524,
+          "z": 0.0
+        },
+        "3": {
+          "x": 11251,
+          "y": 14524,
+          "z": 0.0
+        },
+        "4": {
+          "x": 11251,
+          "y": 9984,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 6",
+      "componentNo": 6,
+      "cargoLabel": "Tower",
+      "length": 25450,
+      "width": 4540,
+      "height": 4630,
+      "weight": 55.6,
+      "Layer": 4,
+      "coordinate": {
+        "1": {
+          "x": -14199,
+          "y": 14624,
+          "z": 0.0
+        },
+        "2": {
+          "x": -14199,
+          "y": 19164,
+          "z": 0.0
+        },
+        "3": {
+          "x": 11251,
+          "y": 19164,
+          "z": 0.0
+        },
+        "4": {
+          "x": 11251,
+          "y": 14624,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 6",
+      "componentNo": 6,
+      "cargoLabel": "Tower",
+      "length": 25450,
+      "width": 4540,
+      "height": 4630,
+      "weight": 55.6,
+      "Layer": 4,
+      "coordinate": {
+        "1": {
+          "x": -14199,
+          "y": 19264,
+          "z": 0.0
+        },
+        "2": {
+          "x": -14199,
+          "y": 23804,
+          "z": 0.0
+        },
+        "3": {
+          "x": 11251,
+          "y": 23804,
+          "z": 0.0
+        },
+        "4": {
+          "x": 11251,
+          "y": 19264,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 6",
+      "componentNo": 6,
+      "cargoLabel": "Tower",
+      "length": 25450,
+      "width": 4540,
+      "height": 4630,
+      "weight": 55.6,
+      "Layer": 4,
+      "coordinate": {
+        "1": {
+          "x": -14199,
+          "y": 23904,
+          "z": 0.0
+        },
+        "2": {
+          "x": -14199,
+          "y": 28444,
+          "z": 0.0
+        },
+        "3": {
+          "x": 11251,
+          "y": 28444,
+          "z": 0.0
+        },
+        "4": {
+          "x": 11251,
+          "y": 23904,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    },
+    {
+      "cargoType": "T110.5-70A",
+      "cargoName": "Tower Section 6",
+      "componentNo": 6,
+      "cargoLabel": "Tower",
+      "length": 25450,
+      "width": 4540,
+      "height": 4630,
+      "weight": 55.6,
+      "Layer": 4,
+      "coordinate": {
+        "1": {
+          "x": 89601,
+          "y": 2250,
+          "z": 0.0
+        },
+        "2": {
+          "x": 89601,
+          "y": 6790,
+          "z": 0.0
+        },
+        "3": {
+          "x": 115051,
+          "y": 6790,
+          "z": 0.0
+        },
+        "4": {
+          "x": 115051,
+          "y": 2250,
+          "z": 0.0
+        }
+      },
+      "tier": 2,
+      "direction": 1
+    }
+  ],
+  "bypassBoardPosition": [
+    {
+      "1": {
+        "x": 14783.0,
+        "y": 79.11,
+        "z": 0.0
+      },
+      "2": {
+        "x": 14783.0,
+        "y": 27379.0,
+        "z": 0.0
+      },
+      "3": {
+        "x": 19633.0,
+        "y": 27379.0,
+        "z": 0.0
+      },
+      "4": {
+        "x": 19633.0,
+        "y": 79.11,
+        "z": 0.0
+      },
+      "layer": 2,
+      "hatchno": 1,
+      "label": 4
+    },
+    {
+      "1": {
+        "x": 19680.0,
+        "y": 79.11,
+        "z": 0.0
+      },
+      "2": {
+        "x": 19680.0,
+        "y": 27379.0,
+        "z": 0.0
+      },
+      "3": {
+        "x": 24530.0,
+        "y": 27379.0,
+        "z": 0.0
+      },
+      "4": {
+        "x": 24530.0,
+        "y": 79.11,
+        "z": 0.0
+      },
+      "layer": 2,
+      "hatchno": 1,
+      "label": 5
+    },
+    {
+      "1": {
+        "x": 24581.0,
+        "y": 79.11,
+        "z": 0.0
+      },
+      "2": {
+        "x": 24581.0,
+        "y": 27379.0,
+        "z": 0.0
+      },
+      "3": {
+        "x": 29431.0,
+        "y": 27379.0,
+        "z": 0.0
+      },
+      "4": {
+        "x": 29431.0,
+        "y": 79.11,
+        "z": 0.0
+      },
+      "layer": 2,
+      "hatchno": 1,
+      "label": 6
+    },
+    {
+      "1": {
+        "x": 66381.0,
+        "y": 79.11,
+        "z": 0.0
+      },
+      "2": {
+        "x": 66381.0,
+        "y": 27379.0,
+        "z": 0.0
+      },
+      "3": {
+        "x": 71231.0,
+        "y": 27379.0,
+        "z": 0.0
+      },
+      "4": {
+        "x": 71231.0,
+        "y": 79.11,
+        "z": 0.0
+      },
+      "layer": 2,
+      "hatchno": 2,
+      "label": 14
+    },
+    {
+      "1": {
+        "x": 73880.0,
+        "y": 79.11,
+        "z": 0.0
+      },
+      "2": {
+        "x": 73880.0,
+        "y": 27379.0,
+        "z": 0.0
+      },
+      "3": {
+        "x": 78730.0,
+        "y": 27379.0,
+        "z": 0.0
+      },
+      "4": {
+        "x": 78730.0,
+        "y": 79.11,
+        "z": 0.0
+      },
+      "layer": 2,
+      "hatchno": 3,
+      "label": 15
+    },
+    {
+      "1": {
+        "x": 78777.0,
+        "y": 79.11,
+        "z": 0.0
+      },
+      "2": {
+        "x": 78777.0,
+        "y": 27379.0,
+        "z": 0.0
+      },
+      "3": {
+        "x": 83627.0,
+        "y": 27379.0,
+        "z": 0.0
+      },
+      "4": {
+        "x": 83627.0,
+        "y": 79.11,
+        "z": 0.0
+      },
+      "layer": 2,
+      "hatchno": 3,
+      "label": 16
+    },
+    {
+      "1": {
+        "x": 83674.0,
+        "y": 79.11,
+        "z": 0.0
+      },
+      "2": {
+        "x": 83674.0,
+        "y": 27379.0,
+        "z": 0.0
+      },
+      "3": {
+        "x": 88524.0,
+        "y": 27379.0,
+        "z": 0.0
+      },
+      "4": {
+        "x": 88524.0,
+        "y": 79.11,
+        "z": 0.0
+      },
+      "layer": 2,
+      "hatchno": 3,
+      "label": 17
+    },
+    {
+      "1": {
+        "x": 98383.0,
+        "y": 79.11,
+        "z": 0.0
+      },
+      "2": {
+        "x": 98383.0,
+        "y": 27379.0,
+        "z": 0.0
+      },
+      "3": {
+        "x": 103233.0,
+        "y": 27379.0,
+        "z": 0.0
+      },
+      "4": {
+        "x": 103233.0,
+        "y": 79.11,
+        "z": 0.0
+      },
+      "layer": 2,
+      "hatchno": 3,
+      "label": 20
+    },
+    {
+      "1": {
+        "x": 77.91,
+        "y": 79.11,
+        "z": 0.0
+      },
+      "2": {
+        "x": 77.91,
+        "y": 27379.0,
+        "z": 0.0
+      },
+      "3": {
+        "x": 4928.0,
+        "y": 27379.0,
+        "z": 0.0
+      },
+      "4": {
+        "x": 4928.0,
+        "y": 79.11,
+        "z": 0.0
+      },
+      "layer": 3,
+      "hatchno": 1,
+      "label": 1
+    },
+    {
+      "1": {
+        "x": 24581.0,
+        "y": 79.11,
+        "z": 0.0
+      },
+      "2": {
+        "x": 24581.0,
+        "y": 27379.0,
+        "z": 0.0
+      },
+      "3": {
+        "x": 29431.0,
+        "y": 27379.0,
+        "z": 0.0
+      },
+      "4": {
+        "x": 29431.0,
+        "y": 79.11,
+        "z": 0.0
+      },
+      "layer": 3,
+      "hatchno": 1,
+      "label": 6
+    },
+    {
+      "1": {
+        "x": 32078.0,
+        "y": 79.11,
+        "z": 0.0
+      },
+      "2": {
+        "x": 32078.0,
+        "y": 27379.0,
+        "z": 0.0
+      },
+      "3": {
+        "x": 36928.0,
+        "y": 27379.0,
+        "z": 0.0
+      },
+      "4": {
+        "x": 36928.0,
+        "y": 79.11,
+        "z": 0.0
+      },
+      "layer": 3,
+      "hatchno": 2,
+      "label": 7
+    },
+    {
+      "1": {
+        "x": 46778.0,
+        "y": 79.11,
+        "z": 0.0
+      },
+      "2": {
+        "x": 46778.0,
+        "y": 27379.0,
+        "z": 0.0
+      },
+      "3": {
+        "x": 51628.0,
+        "y": 27379.0,
+        "z": 0.0
+      },
+      "4": {
+        "x": 51628.0,
+        "y": 79.11,
+        "z": 0.0
+      },
+      "layer": 3,
+      "hatchno": 2,
+      "label": 10
+    },
+    {
+      "1": {
+        "x": 51680.0,
+        "y": 79.11,
+        "z": 0.0
+      },
+      "2": {
+        "x": 51680.0,
+        "y": 27379.0,
+        "z": 0.0
+      },
+      "3": {
+        "x": 56530.0,
+        "y": 27379.0,
+        "z": 0.0
+      },
+      "4": {
+        "x": 56530.0,
+        "y": 79.11,
+        "z": 0.0
+      },
+      "layer": 3,
+      "hatchno": 2,
+      "label": 11
+    },
+    {
+      "1": {
+        "x": 56532.0,
+        "y": 79.11,
+        "z": 0.0
+      },
+      "2": {
+        "x": 56532.0,
+        "y": 27379.0,
+        "z": 0.0
+      },
+      "3": {
+        "x": 61432.0,
+        "y": 27379.0,
+        "z": 0.0
+      },
+      "4": {
+        "x": 61432.0,
+        "y": 79.11,
+        "z": 0.0
+      },
+      "layer": 3,
+      "hatchno": 2,
+      "label": 12
+    },
+    {
+      "1": {
+        "x": 66381.0,
+        "y": 79.11,
+        "z": 0.0
+      },
+      "2": {
+        "x": 66381.0,
+        "y": 27379.0,
+        "z": 0.0
+      },
+      "3": {
+        "x": 71231.0,
+        "y": 27379.0,
+        "z": 0.0
+      },
+      "4": {
+        "x": 71231.0,
+        "y": 79.11,
+        "z": 0.0
+      },
+      "layer": 3,
+      "hatchno": 2,
+      "label": 14
+    },
+    {
+      "1": {
+        "x": 73880.0,
+        "y": 79.11,
+        "z": 0.0
+      },
+      "2": {
+        "x": 73880.0,
+        "y": 27379.0,
+        "z": 0.0
+      },
+      "3": {
+        "x": 78730.0,
+        "y": 27379.0,
+        "z": 0.0
+      },
+      "4": {
+        "x": 78730.0,
+        "y": 79.11,
+        "z": 0.0
+      },
+      "layer": 3,
+      "hatchno": 3,
+      "label": 15
+    },
+    {
+      "1": {
+        "x": 98383.0,
+        "y": 79.11,
+        "z": 0.0
+      },
+      "2": {
+        "x": 98383.0,
+        "y": 27379.0,
+        "z": 0.0
+      },
+      "3": {
+        "x": 103233.0,
+        "y": 27379.0,
+        "z": 0.0
+      },
+      "4": {
+        "x": 103233.0,
+        "y": 79.11,
+        "z": 0.0
+      },
+      "layer": 3,
+      "hatchno": 3,
+      "label": 20
+    }
+  ]
+}
