@@ -1,0 +1,1245 @@
+% !TeX program = xelatex
+% ============================================================
+%  风电塔筒配载项目 —— 答辩准备手册（算无遗策版）
+%  说明：复制到 Overleaf，编译引擎请选择 XeLaTeX。无需本地编译。
+%  本文是“答辩陪练 + 知识底座 + 问题库”，覆盖：你需要懂的全部原理、
+%  候选生成的每一步细节、以及评委可能问到的几乎所有问题与标准话术。
+% ============================================================
+\documentclass[11pt]{ctexart}
+
+\usepackage[a4paper,margin=2.3cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{bm}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage[most]{tcolorbox}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{listings}
+\lstdefinestyle{codebox}{basicstyle=\ttfamily\scriptsize,backgroundcolor=\color{gray!8},%
+  breaklines=true,frame=single,framesep=4pt,rulecolor=\color{gray!40},%
+  columns=fullflexible,keepspaces=true,showstringspaces=false,xleftmargin=3pt,xrightmargin=3pt}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue!55!black,citecolor=blue!55!black,urlcolor=blue!55!black}
+
+\newcommand{\unit}[1]{\,\mathrm{#1}}
+\newcommand{\code}[1]{\texttt{#1}}
+
+% ---- 数学记号 ----
+\newcommand{\setP}{\mathcal{P}}
+\newcommand{\setB}{\mathcal{B}}
+\newcommand{\setK}{\mathcal{K}}
+\newcommand{\setS}{\mathcal{S}}
+
+% ---- 问答盒：评委问题 + 标准回答 ----
+\newtcolorbox{qa}[1]{breakable, enhanced, colback=blue!3, colframe=blue!45!black,
+  fonttitle=\bfseries, coltitle=white, title={#1},
+  left=5pt,right=5pt,top=4pt,bottom=4pt, boxrule=0.7pt, arc=2pt}
+
+% ---- 要点盒：一句话/速记 ----
+\newtcolorbox{key}{colback=orange!8, colframe=orange!60!black,
+  left=5pt,right=5pt,top=4pt,bottom=4pt, boxrule=0.6pt, arc=2pt}
+
+% ---- 警示盒：诚实边界 / 易被问倒 ----
+\newtcolorbox{warn}{colback=red!4, colframe=red!55!black,
+  left=5pt,right=5pt,top=4pt,bottom=4pt, boxrule=0.6pt, arc=2pt}
+
+\newcommand{\Q}[1]{\textbf{【可能追问】}\,#1}
+\newcommand{\A}{\textbf{答：}}
+\newcommand{\oneline}[1]{\begin{key}\textbf{一句话：}#1\end{key}}
+
+\title{\textbf{风电塔筒配载项目 · 答辩准备手册}\\[3pt]
+\large 算法、模型、候选生成全解 + 评委问题库（算无遗策版）}
+\author{配载寻优智能体平台}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent
+本手册的目标只有一个：\textbf{让你在答辩台上对这个项目无可问倒}。它分三部分——
+（一）\textbf{知识底座}：把问题、方法、数学模型、候选生成、求解过程逐层讲透，
+尤其把评委最爱追问的“\emph{候选位到底怎么生成}”一步步拆开；
+（二）\textbf{结果与校验}：讲清 27 套这套解怎么来、是不是最优、怎么验证；
+（三）\textbf{问题库}：按"问题理解 / 方法选择 / 候选生成 / 约束 / 求解 / 结果 / 质疑 / 对比"
+八类，给出近 50 个可能问题的\textbf{标准话术}，并单列“硬骨头”——那些可能把你问倒的诚实边界，
+连同得体的应对。所有数字、机制均核对自源代码与输入数据，可放心引用。
+\end{abstract}
+
+\tableofcontents
+\bigskip\hrule\bigskip
+
+% ============================================================
+\section{怎么用这份手册 + 三档电梯演讲}
+% ============================================================
+
+\textbf{建议顺序：}先把 \S2 的“关键数字速记卡”背下来；再读 \S3--\S6 建立原理直觉；
+\S4（候选生成）务必读透，这是技术深度的命门；最后把 \S10 问题库的“一句话”话术过一遍。
+答辩前 10 分钟，只看 \S2 速记卡 + \S11 硬骨头即可。
+
+\begin{key}
+\textbf{30 秒版（被问“你这做的是什么”）：}
+我们解决\textbf{风电塔筒按“套”发运时怎么在一艘多层多舱船上装得最多}的问题。
+每套塔筒由 6 个分段组成、必须成套装船。我们把“货物放在哪”这个连续问题，
+\textbf{离散成有限个候选摆放位}，再用\textbf{混合整数规划（MILP）}精确求出能装的最大完整套数，
+并给出\textbf{数学上可证明的全局最优}。本算例装到 \textbf{27 套，最优性间隙 0\%，零几何冲突}。
+\end{key}
+
+\textbf{3 分钟版（加上方法骨架）：}在 30 秒版基础上补——
+（1）难点：决策既有连续坐标又有离散选择，且“成套”是强耦合的全局约束，下层货物高度还会影响上层可用空间（跨层耦合）；
+（2）策略：两阶段。第一阶段“候选生成”把每个构件在每层、每个朝向、每个可行位置枚举成一个个\emph{单体已可行}的候选位，纯几何约束在这一步就过滤掉；
+第二阶段在候选位上建 0--1 选择变量，把“成套、间距、承重、跨层耦合”写成线性约束，用 HiGHS 分支定界求全局最优；
+（3）为什么能解：约束矩阵虽达 1500 万行，但都是“两两不相容”这种高度可压缩的结构，HiGHS 的 presolve（团合并）能把它压到 2.6 万行，几分钟出最优。
+
+\textbf{10 分钟版：}沿“问题分析 $\to$ 策略选择 $\to$ 数学模型 $\to$ 候选生成 $\to$ 求解 $\to$ 结果与校验”讲，
+正好是 \S3--\S8 的主线，每节挑 1--2 个要点 + 1 个数字。
+
+% ============================================================
+\section{项目全景 + 关键数字速记卡}
+% ============================================================
+
+\subsection{业务背景（用自己的话能说清）}
+中远海特承运海上风电塔筒。一\textbf{套}塔筒由 6 个分段（\code{componentNo} $1\sim6$）组成，
+\textbf{必须 6 件配齐才算一套}，只装其中几件不计入有效套数（残套无价值）。
+船是\textbf{四层、多舱}结构：
+\begin{itemize}[leftmargin=1.8em,itemsep=1pt]
+  \item \textbf{Layer 1}：舱内，货物直接坐落船底（主承载层）；
+  \item \textbf{Layer 2 / 3}：货物两端“担”在专用的 \textbf{bypass 盖板（旁通板）}上（像架在两根横梁上）；
+  \item \textbf{Layer 4}：顶层，货物坐落在\textbf{舱盖板}上。
+\end{itemize}
+目标是在满足一整套几何/结构/安全约束下，\textbf{装齐尽可能多的完整套数}。
+
+\subsection{输入 / 输出}
+\textbf{输入}（\code{test\_data.json}）：
+\code{cargoData}（每个分段的长宽高、重量、构件号）；
+\code{vesselStructure}（\code{bypassBoardPosition} 旁通板四角坐标+层+舱；
+\code{hatchCoverPosition} 舱盖板四角坐标；\code{stowageFeasibleRange} 每层每舱的可配载多边形与限高）。
+\textbf{输出}（\code{result.json}）：\code{totalSetCount} 总套数；\code{cargoPosition} 每件被选中货物的四角坐标/层/层叠数 \code{tier}/朝向 \code{direction}；
+\code{bypassBoardPosition} 被启用的旁通板清单。
+
+\subsection{本算例规模（务必记熟）}
+\begin{center}\small
+\begin{tabular}{ll}
+\toprule
+项 & 值 \\
+\midrule
+货型 & 1 种：T110.5-70A \\
+构件 & 6 个分段（cn 1$\sim$6），长 8.9$\sim$26.2 m，重 55.6$\sim$72.6 t，高约 4.64 m \\
+舱室 & 4 个（Hatch1$\sim$4；Hatch4 在船首，外形不规则）\\
+bypass 盖板 & \textbf{40} 块（Layer2 二十块 + Layer3 二十块；每层按舱 6/8/6 分布在 H1/H2/H3，\textbf{H4 无盖板}）\\
+舱盖板 & \textbf{20} 块（仅 Layer4 用）\\
+可配载区域 & 11 个（L1 四舱 + L2/L3 各三舱 + L4 整片）\\
+限高 & L1: 6329/H4 19503；L2: 5052；L3: 分段（端 3639 / 中 5618）；L4: 不限高 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{key}\textbf{关键数字速记卡（背下来）}
+\begin{itemize}[leftmargin=1.5em,itemsep=1pt]
+  \item \textbf{结果：27 套}，最优性间隙 \textbf{0\%}（已证全局最优），\textbf{0} 几何冲突。
+  \item 摆放位 \textbf{106} 个（L1:36 / L2:13 / L3:21 / L4:36）；承载货物 \textbf{162} 件（$=27\times6$）。
+  \item 启用 bypass \textbf{17 / 18} 块（上限 18）。
+  \item 最小间距：纵向 $g_x=500$ mm、横向 $g_y=100$ mm；承重上限 $\sigma=3\unit{t/m^2}$。
+  \item 采用配置 T4 分相 $(\text{L1}\,3,2;\ \text{L23}\,2,2;\ \text{L4}\,2,3)$ $\Rightarrow$ \textbf{16\,629} 个候选位（L1:2142 / L2:7563 / L3:3591 / L4:3333）。
+  \item MILP 规模：\textbf{16\,670} 变量、\textbf{1534 万}行约束、3075 万非零；presolve 后 \textbf{2.6 万}行、121 万非零。
+  \item 耗时：HiGHS 求解 \textbf{433.7 s}，端到端 \textbf{976.6 s}；分支定界仅 \textbf{1} 个节点即收敛。
+  \item 工具链：Pyomo 建模 $\to$ HiGHS 1.14 求解（回退 GLPK/CBC）。
+\end{itemize}
+\end{key}
+
+% ============================================================
+\section{核心方法论：为什么是“候选离散化 + 精确 MILP”}
+% ============================================================
+
+\subsection{问题的组合本质}
+这在数学上是带复杂工程约束的\textbf{二维布局/装箱问题}，三个难点：
+（i）\textbf{混合决策}——既要定连续的 $(x,y)$ 坐标，又要选朝向、层叠、盖板启用（离散）；
+（ii）\textbf{瓶颈耦合}——总套数由\emph{最稀缺构件}封顶，6 个构件互相牵制；
+（iii）\textbf{跨层耦合}——下层货物若双层堆高会侵入上层空间，不能分层独立解。
+
+\subsection{两段式策略}
+\begin{enumerate}[leftmargin=1.8em,itemsep=2pt]
+  \item \textbf{候选位离散化}：把“某构件放在何处”的连续自由度，预先离散成有限个\emph{候选摆放位}。
+  每个候选位是一个\textbf{完全确定的方案原子}——固定了构件、层、舱、朝向、层叠数、精确坐标、所担盖板。
+  \emph{纯几何的单体可行性约束（落位、四角落板、不跨舱、Layer3 自身限高）在生成时就过滤}，保证每个候选位单独看一定可行。
+  \item \textbf{0--1 精确优化（MILP）}：在候选位集合上引入二元选择变量 $y_p$，
+  把“成套、间距、承重、跨层耦合”这类\emph{关系型}约束写成线性不等式，用分支定界求\textbf{全局最优}并给出最优性证明（对偶间隙）。
+\end{enumerate}
+
+\begin{key}\textbf{一句话记住这套方法：}
+“连续坐标太难直接优化，我们把它\textbf{离散成候选位}（几何约束在这步内化），
+再用 MILP 在候选位上做\textbf{可证明最优}的 0--1 选择。”
+\end{key}
+
+\subsection{为什么不用启发式（遗传/退火/贪心）？}
+启发式能快速给可行解，但\textbf{无法证明最优、易陷局部最优}，对“成套”这种全局耦合尤其吃亏。
+客户高度关注“是不是已经装到极限”，这正需要\textbf{最优性证明}。离散化后规模可控，
+HiGHS 的 presolve + 割平面可把海量配对约束压到可解，故选 MILP 精确求解。
+
+% ============================================================
+\section{候选生成详解（技术深度命门，务必读透）}
+% ============================================================
+
+这一节回答评委最爱问的“\emph{候选位到底怎么生成}”。代码在 \code{src/core/candidate\_gen.py}（总调度）
+与 \code{candidate\_layer1.py / candidate\_layer23.py / candidate\_layer4.py}（按层实现）。
+
+\subsection{一个候选位 = 一个“已经摆好的方案原子”}
+每个候选位 $p$ 记录：构件 \code{cargo}、层 \code{layer}、左下角坐标 $(x,y)$、
+朝向 \code{direction}（1=顺船，长边沿 $x$；0=横船，长边沿 $y$）、层叠数 \code{tier}（1 或 2）、
+所在舱 \code{hatch\_id}、以及\textbf{所担盖板集合} \code{supporting\_boards}。
+由这些可派生出\textbf{足迹矩形}（占地）、\textbf{堆垛总高} $=\text{height}\times\text{tier}$、
+\textbf{半重} $=\text{weight}\times\text{tier}/2$。
+
+\subsection{枚举的三重循环（通用骨架）}
+对\textbf{每个构件 $\times$ 每个朝向 $\times$ 每个可行区域}，按“\textbf{步距网格 + 分相偏移}”撒锚点，逐一过几何过滤：
+\begin{itemize}[leftmargin=1.8em,itemsep=2pt]
+  \item \textbf{朝向决定足迹与层叠}：顺船 $(s_x,s_y)=(\text{length},\text{width})$ 且层叠可取 $\{1,2\}$；
+  横船 $(s_x,s_y)=(\text{width},\text{length})$ 且层叠只能 $\{1\}$。\emph{这一步就内化了约束 C1（横船不可双层）。}
+  \item \textbf{步距}：$x$ 向 $\Delta_x=s_x+g_x$，$y$ 向 $\Delta_y=s_y+g_y$（间距直接加进步距，使相邻锚点天然满足最小间距）。
+  \item \textbf{几何过滤}：足迹必须落入可配载多边形（内化 C7a 落位 + C9 不跨舱）；
+  Layer$\ge$2 还要求四角落在盖板上（内化 C5）；Layer3 还要过自身限高检查（内化 C7b）。
+  \textbf{任何不通过的锚点根本不生成候选位。}
+\end{itemize}
+
+\subsection{分相（phase）参数：到底是什么、为什么需要}
+\begin{key}\textbf{核心理解：}步距网格只有一套时，锚点是“尺寸+间距”一格一格摆的、\textbf{相位固定}，
+很多“稍微挪一点就能多塞一个”的好位置会被错过。\textbf{分相}就是\textbf{把同一张网格平移若干次、叠加起来}，
+等价于\textbf{加密锚点候选}，但不破坏“相邻锚点满足最小间距”的好性质。
+\end{key}
+具体地，对 $x$ 方向取 $n^x$ 个分相，第 $i$ 个分相的偏移为
+\[
+o_x^{(i)} = \Big\lfloor \tfrac{\Delta_x}{n^x} \Big\rfloor \cdot i,\qquad i=0,1,\dots,n^x-1,
+\]
+即把整张网格依次右移 $\tfrac{1}{n^x}\Delta_x$。$y$ 方向同理。所以 $n^x=n^y=1$ 是最稀的单层网格；
+分相越多，候选位越密，可逼近的最优越好，但模型越大、越慢。\textbf{分相是“解质量 $\leftrightarrow$ 规模/耗时”的旋钮。}
+
+\subsection{【例 1】分相偏移到底“偏”的是什么 —— 一维数轴例子}
+\begin{key}\textbf{结论先行：}分相偏移“偏”的是\textbf{整张网格的起跑线}。
+一个分相 $=$ 一张从某起点、按固定步距铺开的锚点网格；多个分相 $=$ 把这张网格依次\textbf{右移一小段}再叠加，
+于是锚点更密、可落位的选择更多。\textbf{偏移量 $=$ 一个步距的若干分之一。}
+\end{key}
+
+拿\textbf{真实数据}走一遍：在 Hatch1 的 Layer1 摆 \textbf{1 号构件（长 $8910$、宽 $4550$）}、\textbf{顺船}（长边沿 $x$）。
+\begin{itemize}[leftmargin=1.8em,itemsep=1pt]
+  \item 可配载 $x$ 范围 $[0,\,29500]$，足迹 $x$ 边长 $s_x=8910$，纵向间距 $g_x=500$；
+  \item \textbf{步距} $\Delta_x=s_x+g_x=8910+500=\mathbf{9410}$；锚点从起点起每隔 $\Delta_x$ 放一个，直到 $x_{\max}-s_x=29500-8910=20590$ 为止；
+  \item \textbf{分相数} $n^x=3$（即 \code{layer1\_x\_phases}=3），\textbf{每相偏移} $o_x=\lfloor\Delta_x/n^x\rfloor\cdot i=\lfloor9410/3\rfloor\cdot i=3136\,i$。
+\end{itemize}
+
+\begin{center}\small
+\begin{tabular}{ccl}
+\toprule
+分相 $i$ & 偏移 $o_x$ & 该相的锚点 $x$（货物左边缘） \\
+\midrule
+0 & 0    & $0,\ \ 9410,\ \ 18820$ \\
+1 & 3136 & $3136,\ \ 12546$ \\
+2 & 6272 & $6272,\ \ 15682$ \\
+\midrule
+\multicolumn{2}{c}{合并排序} & $0,\ 3136,\ 6272,\ 9410,\ 12546,\ 15682,\ 18820$\quad(\textbf{7 个})\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{读懂这张表：}只用 1 张网格（分相 0）时，左边缘只能落在 $\{0,9410,18820\}$ \textbf{三个}位置；
+开 3 个分相后，把网格分别右移 $0/3136/6272$ 再叠加，左边缘可选位置变成 \textbf{7 个}，密了一倍多。
+\begin{key}\textbf{为什么这能多装套？}假设最优堆叠希望这件 1 号构件的左边缘落在 $x\approx6000$（因为 $x{=}0\!\sim\!5000$ 被别的货占了）。
+没有分相时最近的锚点是 $0$ 和 $9410$，$6000$ 处\textbf{根本没有候选位}，这个好位置被白白放弃；
+开了分相 2（偏移 $6272$），$6272$ 处就有候选位，正好顶上。
+\textbf{分相不是让你在同一处多塞货，而是给求解器更细的“落点选择”，从而拼得更紧、最终多凑出套数——这正是 T1（全 1）只有 24 套、T4 能到 27 套的根本原因。}
+\end{key}
+
+\textbf{一个必须澄清的点：}同一处附近、来自不同分相的两个候选位（如左边缘 $0$ 与 $3136$）足迹是\textbf{重叠}的
+（$[0,8910]$ 与 $[3136,12046]$ 相交），它们\textbf{绝不会被同时选中}——C3/C4 的冲突对会把这一对标成互斥（$y_p+y_q\le1$）。
+所以“候选位变多”\textbf{不会}造成货物重叠，只是把“选哪个落点”的自由交给求解器全局权衡。
+
+\subsection{【例 2】Layer 1 二维网格 —— 一个构件能生成多少候选位}
+$x,y$ 两方向各自独立地“步距 $+$ 分相”，再取\textbf{笛卡尔积}。续用 1 号构件、顺船、Hatch1：
+\begin{itemize}[leftmargin=1.8em,itemsep=1pt]
+  \item $x$ 向：如例 1，\textbf{7} 个锚点；
+  \item $y$ 向：范围 $[0,27462]$，$s_y=4550$，$g_y=100$，$\Delta_y=4650$，$n^y=2$（\code{layer1\_y\_phases}=2），偏移 $\lfloor4650/2\rfloor\cdot i=2325\,i$。
+        分相 0：$0,4650,9300,13950,18600$；分相 1：$2325,6975,11625,16275,20925$ —— 合并 \textbf{10} 个锚点；
+  \item \textbf{笛卡尔积}：$7\times10=\mathbf{70}$ 个网格点，每点都过“足迹落入多边形”（Hatch1 是矩形，全过）；
+  \item 每点按朝向允许的层叠展开：顺船 $\tau\in\{1,2\}$，故 $70\times2=\mathbf{140}$ 个候选位——\textbf{仅这一个构件、这一个朝向、这一个舱}。
+\end{itemize}
+再乘上 6 构件 $\times$ 2 朝向 $\times$ 4 舱（横船只 $\tau{=}1$），数量迅速累积——这就是 Layer1 最终约 \textbf{2142} 个候选位的来源（经多边形过滤后）。
+\textbf{候选位多 $\Rightarrow$ 解空间细 $\Rightarrow$ 解更优，但模型更大、更慢}，这正是分相要权衡的。
+
+\subsection{三层的生成方式不同（重点对比）}
+
+\paragraph{Layer 1（舱内自由网格）。}最简单：在舱的可配载多边形包围盒内，
+按上面的“步距 + 分相”撒规则网格，足迹落入多边形即生成；无需盖板支撑。
+
+\paragraph{Layer 2 / 3（锚定在“盖板对”上 —— 与 L1 本质不同）。}
+\textbf{货物两端必须精确担在盖板上}，所以\emph{不是自由网格}，而是\textbf{以盖板对 $(b_L,b_R)$ 为锚}：
+\begin{itemize}[leftmargin=1.8em,itemsep=2pt]
+  \item 遍历同舱内排序后的盖板，取所有 $(i,j),\,j\ge i$ 的盖板对（\,$i=j$ 表示\textbf{单板承载}，$i<j$ 表示\textbf{跨相邻两板}\,）；
+  \item \textbf{$x$ 由“两端各自落在左/右板内”这个区间约束反解出来}：要求左端 $cx$ 落在左板 $x$ 区间、右端 $cx+s_x$ 落在右板 $x$ 区间，得到可行区间 $[cx_{lo},cx_{hi}]$，再用 \code{\_spread} 在其中取 $n^x+1$ 个均匀点（含两端点）；
+  \item \textbf{$y$ 在盖板的 $y$ 跨度内按槽位 $\Delta_y=s_y+g_y$ 撒点}（\code{\_y\_anchors}，带分相偏移）；
+  \item 每个锚点再\textbf{严格校验四角点在两块板内}（\code{point\_in\_polygon}）并复核足迹落入可配载范围；通过才记录，并把 \code{supporting\_boards} 记为单板或板对。
+\end{itemize}
+
+\subsection{【例 3】Layer 2/3 板对锚定 —— 为什么不是自由撒网格}
+Layer2/3 的 $x$ \textbf{不是自由网格}，而是\textbf{由“两端各落在左/右盖板内”这个条件反解出来}。看真实数据：
+Hatch1 的 Layer2 有 6 块 bypass 盖板，沿 $x$ 依次约为
+板1 $[78,4928]$、板2 $[4980,9830]$、板3 $[9881,14731]$、$\dots$，每块宽约 $4850$，$y$ 跨度都是 $[79,27379]$。
+
+\textbf{先看一个关键事实：}1 号构件顺船时长 $8910>4850$，\textbf{一块板托不住}，必须\textbf{横跨相邻两块板}。
+取板对 $(b_1,b_2)$：左板 $x\in[78,4928]$、右板 $x\in[4980,9830]$。设货物左边缘 $cx$，则
+\[
+\underbrace{78\le cx\le 4928}_{\text{左端落左板}},\qquad
+\underbrace{4980\le cx+8910\le 9830}_{\text{右端落右板}}\ \Rightarrow\ -3930\le cx\le 920.
+\]
+两条合并得 $cx\in[\mathbf{78},\,\mathbf{920}]$——这就是代码里 \code{cx\_low=max(78,\,4980$-$8910)=78}、\code{cx\_high=min(4928,\,9830$-$8910)=920} 的由来。
+再用 \code{\_spread(78,\,920,\,2)}（这里 $n^x{=}2$）在区间内取 $n^x{+}1=3$ 个均匀点：$\{78,\,499,\,920\}$。
+即货物左边缘可取 $78/499/920$ 三处，\textbf{每处都保证两端稳稳担在板 1、板 2 上}。
+
+$y$ 向则在盖板 $y$ 跨度 $[79,27379]$ 内、按槽距 $\Delta_y=s_y+g_y=4550+100=4650$ 撒点（带 $y$ 分相），约 10 个槽位。
+于是仅 $(b_1,b_2)$ 这一对就生成约 $3\times10=30$ 个候选位（再乘层叠）。板对 $(b_2,b_3)、(b_1,b_3)、\dots$ 各自再来一轮，
+\textbf{这就是 Layer2 候选位多达 7563 个的原因}。
+
+\begin{key}\textbf{顺船 vs 横船的对照（好记）：}1 号构件\textbf{横船}时 $x$ 边长变成宽 $4550<4850$，
+\textbf{一块板就托得住}（代码里 $i{=}j$ 的单板情形）；\textbf{顺船}时长 $8910$ 太长，\textbf{必须跨两块板}（$i<j$）。
+伪代码“板对 $(b_i,b_j)$，$j\ge i$”这个写法\textbf{同时涵盖}了单板（$i{=}j$）与跨双板（$i<j$）两种承载方式。
+\end{key}
+
+\paragraph{Layer 4（顶层网格 + 四角落舱盖板）。}像 Layer 1 那样撒网格，但额外要求\textbf{四角分别落在某块舱盖板上}（\code{\_corners\_on\_boards}）；不限高，故顺船可双层。
+
+\subsection{朝向与层叠怎么进集合}
+对每个通过几何过滤的锚点，按朝向允许的层叠集合循环：顺船生成 \code{tier}$\in\{1,2\}$ 两个候选位，横船只生成 \code{tier}$=1$。
+\textbf{Layer3 的 \code{tier}=2 会因高度检查（$2\times4640=9280>5618$）被全部过滤}，故 L3 实际全是单层——这是一个很好的细节。
+
+\subsection{冲突对预计算（生成期顺带产出）}
+关系型约束（C3/C4/C6/C7d）的系数也在这一阶段以几何方式枚举成“\textbf{冲突对}”$(p_1,p_2)$：
+\begin{itemize}[leftmargin=1.8em,itemsep=1pt]
+  \item C3/C4：在每个（层,舱）分组内按 $x$（或 $y$）排序，用\textbf{扫描线}剪枝——一旦后续候选位起点越过当前终点即 \code{break}，避免 $O(n^2)$ 全枚举；
+  \item C6：为每个担板候选位预算两侧“禁区”矩形，与同层其他候选位做矩形相交；
+  \item C7：对每个低层候选位，按累计限高判定它侵入哪些上层，再与该上层 bypass/候选位做相交测试。
+\end{itemize}
+
+\begin{algorithm}[ht]
+\caption{候选生成（要点伪代码）}
+\begin{algorithmic}[1]
+\State $\setP\gets\varnothing$
+\ForAll{构件 $c$，朝向 $d\in\{1,0\}$}
+  \State $(s_x,s_y)\gets$ 按 $d$ 取（长,宽）或（宽,长）；\ \ \textbf{若} $d=0$ \textbf{则} 层叠集 $\gets\{1\}$ \textbf{否则} $\{1,2\}$ \Comment{内化 C1}
+  \State $\Delta_x\gets s_x+g_x,\ \Delta_y\gets s_y+g_y$
+  \ForAll{分相偏移 $(o_x,o_y)$，及网格锚点 $(x,y)$}
+    \If{足迹 $\not\subseteq$ 可配载多边形} \textbf{continue} \EndIf \Comment{内化 C7a、C9}
+    \If{$\ell\ge2$ 且 四角未全落在盖板上} \textbf{continue} \EndIf \Comment{内化 C5}
+    \ForAll{$\tau\in$ 层叠集}
+      \If{$\ell=3$ 且 $\text{height}\cdot\tau>$ 分段限高} \textbf{continue} \EndIf \Comment{内化 C7b}
+      \State 记录所担盖板 $\setS(p)$，把候选位 $p$ 加入 $\setP$
+    \EndFor
+  \EndFor
+\EndFor
+\State 分组排序 + 扫描线 + Reach 判定，生成冲突对集合
+\end{algorithmic}
+\end{algorithm}
+
+% ============================================================
+\section{数学模型：变量、目标、十大约束（速记）}
+% ============================================================
+
+\subsection{决策变量}
+\[
+y_p\in\{0,1\}\ (\text{选用候选位 }p),\qquad
+z_b\in\{0,1\}\ (\text{启用 bypass 盖板 }b),\qquad
+S\in\mathbb{Z}_{\ge0}\ (\text{完整套数}).
+\]
+舱盖板不设开关变量（视为恒可用）。目标：$\boxed{\max\ S}$。
+
+\subsection{十大约束一表速记（哪些进模型、哪些在生成期内化）}
+\begin{center}\small
+\begin{tabular}{clcl}
+\toprule
+约束 & 含义 & 进 MILP？ & 形式 \\
+\midrule
+C1 & 横船只能单层（顺船可双层） & 生成期内化 & 朝向决定层叠集 \\
+C2 & 成套：每构件装载量 $\ge S$ & \textbf{是} & $\sum_{p\in\setP_{t,k}}\tau_p\,y_p\ge S$ \\
+C3 & 横向间距 $>100$ mm & \textbf{是} & 冲突对 $y_{p}+y_{q}\le1$ \\
+C4 & 纵向间距 $>500$ mm & \textbf{是} & 冲突对 $y_{p}+y_{q}\le1$ \\
+C5 & L2/3/4 四角落在盖板上 & 生成期内化 & 锚点过滤 \\
+C6 & 同板不头对头 & \textbf{是} & 禁区相交 $\Rightarrow y_{p}+y_{q}\le1$ \\
+C7a & 足迹落入可配载范围 & 生成期内化 & 锚点过滤 \\
+C7b & Layer3 自身限高（硬，不可破） & 生成期内化 & 高度检查 \\
+C7c & 下层超高 $\Rightarrow$ 上层 bypass 禁用 & \textbf{是} & $y_p+z_b\le1$ \\
+C7d & 下层超高 $\Rightarrow$ 与上层货物互斥 & \textbf{是} & $y_p+y_q\le1$ \\
+C8 & bypass 启用 $\le18$ 且双向绑定 & \textbf{是} & $\sum z_b\le18,\ y_p\le z_b,\ z_b\le\sum y$ \\
+C9 & L1/2/3 不跨舱 & 生成期内化 & 锚点带舱号 \\
+C10 & 盖板均布承重 $\le 3\unit{t/m^2}$ & \textbf{是} & $\sum\tilde\omega_p y_p\le\sigma A_b z_b$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{三条最该讲清的约束}
+
+\paragraph{C2 成套约束（最核心）。}对每个构件 $k$：
+\[
+\sum_{p:\ \text{构件}=k}\tau_p\,y_p\ \ge\ S.
+\]
+因为目标是 $\max S$，最优 $S^\star$ 自动等于\textbf{各构件可装单元数的最小值（瓶颈构件）}。
+$\tau_p$ 让一个双层候选位\textbf{一次贡献 2 个单元}。若某构件完全无候选位，则强制 $S=0$。
+
+\paragraph{C7 跨层高度耦合（最体现“非平凡”）。}下层货物双层堆高会侵入上层。
+判据用\textbf{累计限高}：例如 Layer1 双层 $9280$ mm $>$ L1 限高 $6329$ mm，就侵入 Layer2 的高度带。
+此时（C7c）它足迹覆盖的 Layer2 bypass 盖板\textbf{被强制禁用}（$y_p+z_b\le1$）；
+（C7d）与它足迹重叠的 Layer2 货物\textbf{不能同选}（$y_p+y_q\le1$）。
+\begin{key}\textbf{为什么 L3 限高是“硬”的、L1/L2 超高却被允许？}
+L3 之上就是顶层舱盖板，盖板必须能盖回去，所以 \textbf{L3 自身限高在生成期硬过滤、绝不超}；
+而 L1/L2 之上还有货物层，超高是\emph{允许}的——代价是用 C7c/C7d \textbf{占用/封锁}它顶上的空间。这套不对称设计正是跨层耦合的精髓。
+\end{key}
+
+\paragraph{C10 承重 + 半重。}一件货物两端各担在一块盖板上，\textbf{每块盖板承担它的一半重量}；
+双层则先把重量翻倍再取半。每块盖板上的\textbf{半重之和 / 盖板面积} $\le 3\unit{t/m^2}$。
+bypass 盖板的承重受 $z_b$ 门控（未启用则容量为 0），舱盖板恒可用。
+
+% ============================================================
+\section{求解全流程 + 怎么读 HiGHS 日志}
+% ============================================================
+
+\subsection{五阶段流水线}
+\[
+\text{载入}\to\text{候选生成}\to\text{Pyomo 建模}\to\text{HiGHS 求解}\to\text{输出/校验}.
+\]
+建模用 Pyomo 的 \code{ConcreteModel}：变量 $y,z,S$，目标 $\max S$，依次施加 C1--C10
+（C1/C5/C9 仅做\textbf{不变量断言}，确认生成期没漏过滤）。求解优先 HiGHS（APPSI 直连），回退 GLPK $\to$ CBC。
+
+\subsection{为什么 1500 万行约束解得动：presolve 的团合并}
+绝大多数约束是 $y_p+y_q\le1$ 这种\textbf{两两不相容}不等式，它们构成一张\textbf{冲突图}。
+HiGHS 的 presolve 通过\textbf{团（clique）合并、探测、变量固定}，把大量成对约束聚合成少量\textbf{团约束}
+（“这一团里最多选一个”），规模锐减约\textbf{三个数量级}：
+\begin{center}\small
+\begin{tabular}{lrrr}
+\toprule & 行 & 列 & 非零元 \\
+\midrule
+presolve 前 & 15\,344\,278 & 16\,670 & 30\,753\,404 \\
+presolve 后 & 26\,169 & 14\,763 & 1\,211\,989 \\
+\bottomrule
+\end{tabular}
+\end{center}
+日志还会报 \code{Objective function is integral with scale 1}：因为目标 $S$ 是整数，对偶上界可\textbf{向下取整}加速收敛。
+
+\subsection{怎么读“节点数=1 即证明最优”}
+根节点 LP 松弛上界约 $27.77$，加割平面后收紧到约 $27.59$；启发式（子-MIP）在约 $433.6$ s 直接找到 $S=27$ 的可行解。
+此刻\textbf{对偶上界 $<28$ 且目标为整数} $\Rightarrow$ 上界向下取整即 $27$ $\Rightarrow$ 与可行解 $27$ 相等 $\Rightarrow$ \textbf{间隙 $0\%$，无需再分支}，故节点数 1 就关闭。
+\begin{key}\textbf{“最优性间隙 0\%”怎么解释：}
+求解器同时维护一个\textbf{下界}（已找到的可行解 27）和一个\textbf{上界}（对偶界，理论上不可能超过的值）。
+当两者相等，就\textbf{数学上证明了 27 是全局最优}，不存在 28 套的方案。这正是 MILP 相对启发式的核心价值。
+\end{key}
+
+% ============================================================
+\section{求解技术概念详解（Pyomo / HiGHS / 分支定界 / 必懂术语）}
+% ============================================================
+本章把“我们到底用了什么、它们怎么工作、谁做的”讲透，并用\textbf{真实代码}演示 Pyomo 怎么建模、用\textbf{一个玩具例子}把分支定界走一遍、再\textbf{逐行读懂}本问题的 HiGHS 求解日志。答辩深问到任何一处，照本章答即可。
+
+\subsection{全景：一条数据如何变成最优解}
+\begin{center}\small
+业务数据 $\to$ \textbf{Python 建模（Pyomo）} 生成标准 MILP $\to$ 交给\textbf{求解器（HiGHS）} $\to$
+\textbf{presolve 化简} $\to$ \textbf{LP 松弛 $+$ 割平面 $+$ 启发式 $+$ 分支定界} $\to$ 最优解 $+$ 最优性证明
+\end{center}
+\textbf{分工要记住：Pyomo 负责“把问题写成数学”，HiGHS 负责“把数学解出来”}，两者通过 APPSI 接口对接。
+下面逐个拆解。
+
+\subsection{MILP：混合整数线性规划（问题的“语言”）}
+\textbf{是什么：}目标函数与所有约束都是变量的\textbf{线性}组合、且\textbf{部分变量必须取整数}的优化问题。标准形可写成
+\[
+\max\ c^\top x \quad \text{s.t.}\quad Ax\le b,\ \ x\ge 0,\ \ x_j\in\mathbb{Z}\ (j\in I).
+\]
+我们的 $y_p,z_b\in\{0,1\}$ 是 0--1 整数、$S$ 是非负整数；目标 $\max S$、约束 $y_p+y_q\le1$ 等全是线性。
+\begin{itemize}[leftmargin=1.8em,itemsep=1pt]
+  \item \textbf{线性（Linear）}：没有 $x\cdot y$、$x^2$、$\sqrt{\,}$ 这类项；纯线性问题（LP）由 \textbf{Dantzig 1947 年的单纯形法}奠基，是 20 世纪应用数学的里程碑。
+  \item \textbf{整数（Integer）}：选/不选、装几件这种\textbf{离散决策}必须整数——整数约束正是难点来源。
+  \item \textbf{混合（Mixed）}：既有整数变量、也（可）有连续变量。
+\end{itemize}
+\textbf{为什么难：}去掉整数要求就是 \textbf{LP}，可行域是连续凸多面体、多项式时间可解；一旦要求整数就变 \textbf{NP 难}——
+可行点变成离散格点，不能靠连续优化一步到位，必须\textbf{搜索}。MILP 就是“线性规划 $+$ 整数搜索”，本项目用的正是它。
+
+\subsection{Pyomo：建模语言（把问题“写成数学”）}
+\paragraph{是什么、谁做的。}Pyomo（\textbf{Py}thon \textbf{O}ptimization \textbf{M}odeling \textbf{O}bjects）是一个开源的\textbf{代数建模语言（AML）}，纯 Python 写。
+它由\textbf{美国桑迪亚国家实验室（Sandia National Laboratories）}的 \textbf{William E. Hart} 牵头，与 Jean-Paul Watson、David L. Woodruff、Carl Laird 等共同开发；
+前身是 Sandia 的 \textbf{Coopr}（COmmon Optimization Python Repository）项目，\textbf{2016 年 6 月迁到 GitHub 开源}（BSD 许可）。
+它的定位等同商业的 \textbf{AMPL / GAMS / AIMMS}——用接近数学公式的方式声明模型，但\textbf{嵌在功能完整的 Python 里}（可循环、读数据、调库）。
+\paragraph{核心思想：声明式建模。}你不写“怎么解”，只\textbf{声明“问题长什么样”}——集合、参数、变量、目标、约束；
+Pyomo 在内存里把它组织成符号表达式与系数矩阵，再\textbf{转交求解器}。\textbf{Pyomo 自己不解题}（这点务必讲清）。
+两种模型：\code{AbstractModel}（先写结构、后灌数据）与 \code{ConcreteModel}（数据已知、当场成形）；\textbf{本项目用 ConcreteModel}。
+\paragraph{五类积木。}
+\begin{itemize}[leftmargin=1.8em,itemsep=1pt]
+  \item \code{Set}（索引集）：如“所有候选位 \code{pid}”“所有 bypass 盖板 \code{board\_id}”。
+  \item \code{Param}（参数）：已知常量（盖板面积、半重等）——本项目多数常量直接写进表达式，未必显式建 Param。
+  \item \code{Var}（变量）：\code{m.y}（候选选不选，Binary）、\code{m.z}（盖板启不启用，Binary）、\code{m.S}（套数，非负整数）。
+  \item \code{Objective}（目标）：$\max S$。
+  \item \code{Constraint}（约束）：每条 C2--C10，通过 \textbf{rule 函数}成批生成。
+\end{itemize}
+\paragraph{“rule 函数”机制（Pyomo 建模的精髓）。}约束不是手写一条条，而是\textbf{给一个索引集 $+$ 一个规则函数}，
+Pyomo 对集合里每个索引调一次该函数、各生成一条约束。看本项目\textbf{真实代码}（已精简，对应 \code{src/solver/pyomo\_model.py} 与 \code{src/constraints/}）：
+\begin{lstlisting}[style=codebox]
+import pyomo.environ as pyo
+m = pyo.ConcreteModel()
+
+# (1) Index sets: all candidate-placement ids, all bypass-board ids
+m.set_pids   = pyo.Set(initialize=[p.pid for p in placements])
+m.set_bypass = pyo.Set(initialize=[b.board_id for b in bypass_boards])
+
+# (2) Variables: y_p, z_b are 0-1; S is a bounded non-negative integer
+m.y = pyo.Var(m.set_pids,   within=pyo.Binary)
+m.z = pyo.Var(m.set_bypass, within=pyo.Binary)
+m.S = pyo.Var(within=pyo.NonNegativeIntegers, bounds=(0, hard_upper_bound))
+
+# (3) Objective: maximize the number of complete sets
+m.obj = pyo.Objective(expr=m.S, sense=pyo.maximize)
+
+# (4) Constraint C2 (set integrity): for each component k,
+#     sum over its candidates of  tier_p * y_p   >=   S
+def c2_rule(model, ct, k):
+    pids = groups[(ct, k)]                  # ids of all candidates of component k
+    return sum(tier[pid] * m.y[pid] for pid in pids) >= m.S
+m.c2 = pyo.Constraint(m.set_cargo_types, m.set_components, rule=c2_rule)
+
+# (4') Conflict pairs C3/C4/C6/C7d: one inequality per incompatible pair
+m.c3 = pyo.Constraint(conflict_pairs,
+                      rule=lambda model, p1, p2: m.y[p1] + m.y[p2] <= 1)
+\end{lstlisting}
+读这段：\code{Set} 声明索引、\code{Var} 声明决策、\code{Objective} 给目标，\code{Constraint(集合, rule=函数)}
+让 Pyomo \textbf{对集合每个元素调一次 rule、各产出一条线性约束}。我们的 10 条约束就是 \code{c01..c10} 各自这样往 \code{m} 上挂——
+比如 C2 对“每货型 $\times$ 每构件”生成一条 $\sum\tau_p y_p\ge S$；C3 对“每个互斥候选对”生成一条 $y_{p_1}+y_{p_2}\le1$（这就是为什么会有上千万行）。
+\paragraph{它如何交给求解器。}建好的 \code{m} 里是符号表达式；Pyomo 通过\textbf{求解器接口}把它翻成求解器认得的系数矩阵
+（通用做法是写 \code{.nl}/\code{.mps} 文件，或用\textbf{内存持久接口 APPSI 直接喂给 HiGHS}——本项目走后者，省去文件读写）。
+\begin{key}\textbf{Pyomo 一句话：}它是“\textbf{把数学写成 Python 对象}”的翻译层——你声明集合/变量/目标/约束，它生成标准 MILP 并转交任意求解器。
+\textbf{最大价值是“求解器无关”}：同一份模型可切 HiGHS / GLPK / CBC / Gurobi，只改一个名字（本项目回退链 HiGHS$\to$GLPK$\to$CBC）。
+\end{key}
+
+\subsection{HiGHS：求解器（把数学“解出来”）}
+\paragraph{是什么、谁做的。}HiGHS 是一个\textbf{开源、免费、高性能}的 LP / MILP 求解器，用 C++ 写、\textbf{无外部依赖}、MIT 许可。
+它出自\textbf{英国爱丁堡大学数学学院}，由 \textbf{Julian Hall} 于 2019 年正式立项开源；源头可追溯到 2016 年底——
+\textbf{Ivet Galabova} 的 LP presolve、\textbf{Julian Hall} 的单纯形 crash、\textbf{Qi Huangfu（黄祺）} 在博士期间（2009--2013）做的\textbf{并行对偶单纯形}三者合体，
+把一类工业 LP 解得比当时最好的开源求解器都快。名字 \textbf{HiGHS} 取自核心成员 \textbf{H}all、ivet \textbf{G}alabova、\textbf{H}uangfu、\textbf{S}chork 的首字母；
+其中\textbf{混合整数（MIP）求解器主要由 Leona Gottwald 贡献}。
+\paragraph{内部有什么。}HiGHS 不是单一算法，而是一整套引擎流水线：
+\textbf{presolve（预处理化简）} $\to$ \textbf{单纯形法 / 内点法（解 LP 松弛）} $\to$ \textbf{割平面} $\to$ \textbf{启发式} $\to$ \textbf{分支定界（解整数）}。
+本章后面几节正是逐个拆这些引擎。
+\paragraph{在本项目怎么用。}通过 Pyomo 的 \textbf{APPSI}（Auto-Persistent Solver Interface）\textbf{直连}调用（版本 1.14）；
+\code{time\_limit} 等选项直接传给 HiGHS（早期 \code{SolverFactory} 包装在某些 pyomo 版本有转发 bug，故走 APPSI 直连）；HiGHS 不可用则\textbf{回退 GLPK $\to$ CBC}。
+\paragraph{为什么选它。}免费无授权门槛；其 presolve 对我们这种“海量两两互斥”的结构\textbf{特别有效}（见后）；本算例已能\textbf{零间隙}求全局最优。
+（商业的 Gurobi / CPLEX 更快、且支持\textbf{懒约束回调}——利于把 1500 万条配对约束改成“按需添加”，是未来方向；但需授权。架构上 Pyomo 让我们可无缝切换。）
+
+\subsection{LP 松弛：整数难题的“连续放宽”（定界的基础）}
+把整数要求\textbf{暂时去掉}（如 $y_p\in\{0,1\}$ 放宽成 $0\le y_p\le1$），得到一个纯 \textbf{LP}。LP 的可行域是\textbf{连续凸多面体}，
+最优必在顶点取到，可用\textbf{单纯形法}（Dantzig 1947，沿多面体棱边走到最优顶点）或\textbf{内点法}（Karmarkar 1984，从内部逼近）高效求解。
+\begin{key}\textbf{关键性质（务必会推）：}LP 松弛的最优值是原整数问题的\textbf{上界}（对 $\max$ 而言）——
+放宽了约束、可行域\textbf{只大不小}，所以最优值\textbf{只高不低}。\textbf{这个上界就是“定界（bound）”的来源}，是整个分支定界的发动机。
+本算例根节点 LP 松弛 $\approx 27.77$，意味着“无论怎么取整，套数都不可能超过 27.77，即 $\le 27$”。
+\end{key}
+若 LP 松弛解\textbf{恰好全是整数}，它\textbf{直接就是整数问题的最优}（无需分支）；可惜一般不会这么巧，于是需要分支定界。
+
+\subsection{分支定界（Branch \& Bound）：MILP 的核心算法（最可能被深问）}
+\paragraph{谁发明的。}由 \textbf{Ailsa Land 与 Alison Doig}（Harcourt）于 \textbf{1960 年}在伦敦政治经济学院（受英国石油 BP 资助）提出，
+论文载于 \emph{Econometrica}；“\textbf{branch and bound}”这个术语则由 \textbf{Little 等人 1963 年}在旅行商问题（TSP）的工作中定名。
+至今它仍是\textbf{求解一般混合整数规划唯一通用的精确方法}。
+\paragraph{核心循环（对 $\max$）。}它是一种\textbf{带剪枝的树搜索}：把整数问题拆成子问题，用“界”避免穷举每一种组合。
+\begin{enumerate}[leftmargin=2em,itemsep=2pt]
+  \item \textbf{根节点}：解 LP 松弛得上界。若解恰好整数即最优；否则必有变量分数（如 $y_p=0.6$）。
+  \item \textbf{分支（Branch）}：挑一个分数变量 $v$，派生两支——一支强制 $v=0$、另一支 $v=1$（一般整数则 $v\le\lfloor\cdot\rfloor$ 与 $v\ge\lceil\cdot\rceil$）。两支覆盖所有整数可能，\textbf{不漏解}。
+  \item \textbf{定界（Bound）}：每个子节点再解 LP 松弛，得该子树上界。
+  \item \textbf{剪枝（Prune）}：三种情形整支砍掉——(a) LP 不可行；(b) 节点上界 $\le$ \textbf{已知最好整数解（入射解 incumbent）}，再找也不会更好；(c) LP 解已整数（更新入射解后无需再分）。
+  \item \textbf{收敛}：维护\textbf{下界}$=$入射解、\textbf{上界}$=$所有活动节点上界的最大值；当\textbf{上界$=$下界}（或差 $\le\epsilon$）即\textbf{证明最优}，停。
+\end{enumerate}
+\paragraph{【完整玩具例子】一棵树走到底（强烈建议能手画）。}考虑
+\[
+\max\ 5x_1+4x_2 \quad \text{s.t.}\quad 6x_1+4x_2\le 24,\ \ x_1+2x_2\le 6,\ \ x_1,x_2\ge 0\ \text{且为整数}.
+\]
+\begin{enumerate}[leftmargin=2em,itemsep=2pt]
+  \item \textbf{根节点 LP 松弛}：最优 $x=(3,\ 1.5)$、目标 $=21$。\textbf{上界 $=21$}。$x_2=1.5$ 是分数 $\Rightarrow$ 对 $x_2$ 分支。
+  \item \textbf{左支 $x_2\le 1$}：LP 最优 $x=(3.33,\ 1)$、目标 $\approx20.67$。$x_1$ 仍分数 $\Rightarrow$ 再对 $x_1$ 分支。
+    \begin{itemize}[leftmargin=1.4em,itemsep=1pt]
+      \item $x_1\le 3$：LP 最优 $x=(3,\ 1)$、目标 $=19$，\textbf{是整数解！}入射解更新为 \textbf{19}。
+      \item $x_1\ge 4$：LP 最优 $x=(4,\ 0)$、目标 $=20$，\textbf{是整数解！}入射解更新为 \textbf{20}（更好）。
+    \end{itemize}
+  \item \textbf{右支 $x_2\ge 2$}：LP 最优 $x=(2,\ 2)$、目标 $=18$。\textbf{上界 $18<$ 当前入射解 $20$ $\Rightarrow$ 剪枝}（这一支不可能更好，整支砍掉）。
+  \item \textbf{收敛}：再无活动节点，入射解 $=20$ 即\textbf{全局最优} $x^\star=(4,0)$。
+\end{enumerate}
+\textbf{这例子点透了三件事：}LP 松弛给\textbf{上界}、整数可行解给\textbf{下界（入射解）}、上界 $\le$ 下界时\textbf{整支剪掉}——
+不必枚举所有 $(x_1,x_2)$ 组合，靠“界”就砍掉了 $x_2\ge2$ 的整个子树。本项目的 27 套是\textbf{同一套机制、只是规模大得多}。
+\begin{key}\textbf{“目标整数 $\Rightarrow$ 上界取整”的威力（本案例关键）：}
+因为套数 $S$ 必为整数，若上界算到 $27.59$，则\textbf{真实最优 $\le\lfloor27.59\rfloor=27$}。
+手里只要已有一个 27 套的可行解，上界 $27=$ 下界 $27$，\textbf{立刻证明全局最优、无需再分支}——这正是日志里 \textbf{“Nodes $=$ 1”} 的原因。
+\end{key}
+
+\subsection{割平面（Cutting Planes）：把松弛“削”得更紧}
+LP 松弛常给分数解、上界偏松。\textbf{割平面}是\textbf{额外加入的有效不等式}：它\textbf{切掉当前这个分数解}、
+但\textbf{保证不切掉任何整数可行点}，于是上界被压低、分支更少。最早由 \textbf{Ralph Gomory（1958）}提出（Gomory 割），
+现代求解器把它与分支定界合用，称 \textbf{branch-and-cut}。本问题最有效的是\textbf{团割（clique cut）}——
+“这一团两两互斥的候选里最多选一个，$\sum_{p\in\text{团}}y_p\le1$”，正贴合我们的冲突图结构；另有\textbf{覆盖割（cover cut）}等。
+日志中上界从 $27.77$ 收紧到 $27.59$，就是割平面的功劳。
+
+\subsection{presolve（预处理）：解之前先“化简”——本方案的命脉}
+真正求解前，HiGHS 先对模型做\textbf{保持最优等价}的化简：删冗余/重复约束、固定能定死的变量（probing 探测）、删被支配的列、对偶推断、合并结构。
+\textbf{对我们最关键的是“团合并”}：上千万条 $y_p+y_q\le1$ 的成对互斥本质是一张\textbf{冲突图}（顶点 $=$ 候选、边 $=$ 不能共选）；
+presolve 把图里的\textbf{团（clique，两两都互斥的一组候选）}聚合成\textbf{单条团约束} $\sum_{p\in\text{团}}y_p\le1$——一条顶替成百上千条成对约束。
+于是\textbf{行数 1534 万 $\to$ 2.6 万、非零 3075 万 $\to$ 121 万}（约三个数量级）；日志另报 \code{Objective function is integral with scale 1}（目标恒整数），使对偶上界可向下取整。
+\textbf{没有 presolve，这个模型根本建不起来、也解不动——它是本方案可行的命脉。}
+
+\subsection{启发式（Heuristics）：快速找“一个好整数解”}
+分支定界需要一个\textbf{入射解}当下界、越早越好（下界越高、剪枝越狠）。启发式就是搜索中\textbf{快速凑可行整数解}的小算法，常见有：
+\textbf{取整（rounding，把分数解四舍五入再修复）}、\textbf{可行性泵（feasibility pump，在“可行”与“整数”之间反复投影）}、
+\textbf{子-MIP（固定大部分变量、只对一小块跑小型 MIP）}、\textbf{RINS} 等。
+本算例日志里：\code{C}（取整类）先找到很差的 $S=1$；随后 \code{L}（子-MIP 类）在约 $433.6$ s \textbf{直接跳到 $S=27$}——正好等于上界取整，间隙归零。
+\begin{key}\textbf{记住分工：}\textbf{启发式负责“够到”最优值（抬高下界）}，\textbf{割平面/对偶界负责“证明”它最优（压低上界）}；
+两者在 branch-and-cut 里一起把上下界夹到相等，缺一不可。
+\end{key}
+
+\subsection{对偶界 / 上界 / 下界 / 最优性间隙（一次说清）}
+\begin{center}\small
+\begin{tabular}{@{}lp{11.2cm}@{}}
+\toprule
+术语 & 含义（对 $\max$ 问题） \\
+\midrule
+下界 / 入射解 & 已经\textbf{找到}的最好整数可行解的值（我们“能做到”这么多）。本案例 $=27$。 \\
+上界 / 对偶界 & LP 松弛 $+$ 割平面给出的\textbf{理论天花板}（再好也超不过）。本案例 $\lfloor27.59\rfloor=27$。 \\
+最优性间隙 gap & $(\text{上界}-\text{下界})/\text{下界}$。$=0$ 即\textbf{已证全局最优}。本案例 $0\%$。 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\textbf{这是 MILP 碾压启发式的根本：}启发式只能给“一个解”、说不清离最优多远；
+MILP 同时给\textbf{解 $+$ 它与最优的距离证明}。$0\%$ 间隙 $=$“数学上保证没有更好的方案了”。
+
+\subsection{【本问题实际求解】逐行读懂 HiGHS 日志}
+把上面所有概念串起来，看本算例 HiGHS 日志的关键几行（原汁原味，仅删去无关行）：
+\begin{lstlisting}[style=codebox]
+Running HiGHS 1.14.0
+MIP  has 15344278 rows; 16670 cols; 30753404 nonzeros; 16670 integer (16669 binary)
+Presolving model
+  ... Presolve reductions: rows 26169(-15318109); columns 14763(-1907);
+                           nonzeros 1211989(-29541415)
+Objective function is integral with scale 1
+Solving MIP model with: 26169 rows; 14763 cols (14762 binary, 1 integer); 1211989 nonzeros
+
+   Src     BestBound       BestSol        Gap        Time
+   z       inf             -0             Large      224.5s
+           27.76636542     -0             Large      264.2s
+   C       27.67883910      1             2667.88%   277.4s
+   L       27.58860458     27             2.18%      433.6s
+           27              27             0.00%      433.7s
+
+Solving report
+   Status            Optimal
+   Primal bound      27
+   Dual bound        27
+   Gap               0% (tolerance: 0.01%)
+   Nodes             1
+   LP iterations     101572
+status=optimal  totalSetCount=27  selected=106  enabled bypass=17
+\end{lstlisting}
+\textbf{逐段对应概念（这就是“27 套是全局最优”在求解器里的字面证据）：}
+\begin{itemize}[leftmargin=1.8em,itemsep=2pt]
+  \item 第 2 行 \texttt{MIP has 15344278 rows ... 16669 binary}：\textbf{原始模型}——1534 万行（几乎全是 $y_p{+}y_q\le1$）、16\,670 变量（16\,669 个 0--1）。
+  \item \texttt{Presolve reductions: rows 26169(-15318109)}：\textbf{presolve 团合并}把 1534 万行压到 \textbf{2.6 万行}（砍掉 1531 万）——本方案命脉。
+  \item \texttt{Objective function is integral with scale 1}：\textbf{目标恒为整数} $\Rightarrow$ 对偶上界可向下取整（后面 $\lfloor27.59\rfloor{=}27$ 即此）。
+  \item 表中 \textbf{\texttt{BestBound} 列 $=$ 上界（对偶界）}、\textbf{\texttt{BestSol} 列 $=$ 下界（入射解）}、\textbf{\texttt{Gap} $=$ 两者相对差}；\texttt{Src} 的 \texttt{z/C/L} 是触发该行的事件（\texttt{C}/\texttt{L} 为两种启发式）。
+  \item \texttt{27.76636542 ... -0}：\textbf{根 LP 松弛}解完，上界 $=27.77$，还没有可行解（下界 $-0$）。
+  \item \texttt{C ... 1 ... 2667\%}：\textbf{取整启发式}找到很差的下界 $S=1$；同时割平面把上界收紧到 $27.68$。
+  \item \texttt{L ... 27 ... 2.18\%}：\textbf{子-MIP 启发式}把下界\textbf{直接抬到 27}；上界已收紧到 $27.59$。
+  \item 末行 \texttt{27 27 0.00\%}：因目标整数，$\lfloor27.59\rfloor{=}27{=}$ 下界 $\Rightarrow$ \textbf{间隙 $0\%$}。
+  \item \texttt{Nodes 1}：\textbf{根节点处理完就关闭}，没分裂出任何子节点——上界一取整就撞上下界。
+  \item \texttt{Optimal / Primal 27 / Dual 27 / Gap 0\%}：\textbf{已证全局最优}，输出 27 套、106 摆放位、17 块 bypass。
+\end{itemize}
+
+\subsection{其他你该顺带会的点}
+\begin{itemize}[leftmargin=1.8em,itemsep=2pt]
+  \item \textbf{精确算法 vs 启发式}：我们是\textbf{精确算法}（保证最优）；遗传/退火/贪心是启发式（快但不保证）。
+  \item \textbf{NP 难 $\neq$ 解不动}：NP 难说的是\emph{最坏情况}；本实例结构好（稀疏冲突图），presolve 后根节点即收敛。
+  \item \code{time\_limit\_s} 只管\textbf{分支定界主循环}，\textbf{不含建模与 presolve}；故总耗时 $=$ 建模 $+$ presolve $+\min$(求解,时限) $+$ 输出。
+  \item \textbf{热启动（warm start）}：用已有解做求解起点可提速；本项目当前未用，每次从零解（已知局限）。
+  \item \textbf{整数容差}：求解器判“是否整数”有个小容差（如 $10^{-6}$）；取解时用 $y_p>0.5$ 判定“选中”。
+  \item \textbf{单位}：全程 mm / t / $\mathrm{t\cdot m^{-2}}$；坐标可负（原点在船体基准）。
+\end{itemize}
+
+% ============================================================
+\section{参数与伪代码逐行精解}
+% ============================================================
+本章把\textbf{每一个可调参数}、以及\textbf{两阶段伪代码的输入、输出、每个符号、每一行}都\textbf{用大白话}讲清楚——目标是\textbf{不懂优化的外行也能看懂、并能自己复述出来}。
+\textbf{伪代码原图出自 \code{docs/model\_formulation.tex} 的“两阶段求解算法”一节}（Algorithm 1 候选生成、Algorithm 2 分支定界）。
+\textbf{符号看着唬人？先翻本章的“名词扫盲”小节}，把 $\Phi,\mathcal{F},\mathcal{S},\mathcal{I}$ 这些先变成人话，再看逐行精解就毫不费力。
+
+\subsection{全部可调参数词典}
+求解入口 \code{gen\_candidates(...)} 与 \code{solve(...)} 的参数如下：
+\begin{center}\small
+\begin{longtable}{@{}lll p{6cm}@{}}
+\toprule
+参数 & 默认 & 归类 & 含义与调法 \\
+\midrule\endhead
+\code{y\_gap} & 100 & 工艺固定 & 货物\textbf{横向（$y$）}最小间距 mm。规范定死、不寻优；也进 C3。 \\
+\code{x\_gap} & 500 & 工艺固定 & 货物\textbf{纵向（$x$）}最小间距 mm。规范定死、不寻优；也进 C4。 \\
+\code{layer1\_x\_phases} & 3 & 离散化密度 & L1 网格\textbf{$x$ 方向分相数}。$\uparrow$ 则 $x$ 落点更细、解更优、模型更大。 \\
+\code{layer1\_y\_phases} & 2 & 离散化密度 & L1 网格\textbf{$y$ 方向分相数}。 \\
+\code{layer23\_x\_phases} & 2 & 离散化密度 & L2/3 \textbf{板对内 $x$ 取点数}（\code{\_spread} 取 $n{+}1$ 点）。 \\
+\code{layer23\_y\_phases} & 2 & 离散化密度 & L2/3 \textbf{$y$ 槽位分相数}。 \\
+\code{layer4\_x\_phases} & 2 & 离散化密度 & L4 网格 $x$ 分相数。 \\
+\code{layer4\_y\_phases} & 3 & 离散化密度 & L4 网格 $y$ 分相数（顶层全宽，$y$ 细化收益大）。 \\
+\code{time\_limit\_s} & 3600/180 & 求解控制 & \textbf{仅限分支定界}主循环秒数；不含建模/presolve。CLI 默认 3600、库默认 180。 \\
+\code{solver\_name} & appsi\_highs & 求解控制 & 求解器；回退 HiGHS$\to$GLPK$\to$CBC。 \\
+\bottomrule
+\end{longtable}
+\end{center}
+
+\begin{key}\textbf{怎么记这 6 个分相参数：}它们是按\textbf{“层 $\times$ 方向”}分别给的\textbf{离散化密度旋钮}。
+数值越大，该层该方向锚点越密、候选位越多、解越可能更优，但模型规模与耗时上升。
+这组特定值 $(3,2;\,2,2;\,2,3)$ 就是报告里的 \textbf{T4 配置}——由“逐步加密”实验找到的\textbf{能稳定达到 27 套的最经济组合}。
+不对称（L1 的 $x$ 给 3、L4 的 $y$ 给 3）反映的是\textbf{哪个层、哪个方向最需要细化才够到 27}。
+\textbf{命令行入口默认就用这组（$\to$27 套）；HTTP/库入口默认全 1（最快档，$\to$约 24 套），需显式传这组才得 27。}
+\end{key}
+
+\paragraph{逐个参数再说细一点（大白话版）。}
+\begin{description}[leftmargin=2em,style=nextline,itemsep=3pt]
+\item[\code{x\_gap}$=500$、\code{y\_gap}$=100$（单位 mm）] 两件货之间必须留的\textbf{最小缝隙}：前后方向（沿船长 $x$）至少 $50$ cm、左右方向（沿船宽 $y$）至少 $10$ cm。这是\textbf{工艺/安全规范定死}的数字（留出吊装、系固、人通过的空间），\textbf{不参与寻优}。它有两处用途：① \textbf{进步距}——撒候选点时步距 $=$ 货物边长 $+$ 这个缝，使相邻候选天然留够缝；② \textbf{进约束}——判定两候选是否“挨太近”（C3/C4）。
+\item[\code{layer1\_x\_phases}$=3$、\code{layer1\_y\_phases}$=2$] 第 1 层（舱内自由网格）在\textbf{船长方向 / 船宽方向}各撒多密的候选落点。比喻：在地板上铺方格找放点，phase 数 $=$ 把方格网\textbf{平移叠加几次}（见 \S4 例 1）；数越大、落点越密、可能多装、但模型越大越慢。
+\item[\code{layer23\_x\_phases}$=2$、\code{layer23\_y\_phases}$=2$] 第 2/3 层（货物两端担在盖板上）。$x$ 方向\textbf{不是}自由网格，而是“在一对盖板允许的那段 $x$ 区间里取几个点”（见 \S4 例 3）；$y$ 方向是“沿盖板宽度分几档槽位”。
+\item[\code{layer4\_x\_phases}$=2$、\code{layer4\_y\_phases}$=3$] 第 4 层（顶层甲板自由网格）的船长/船宽密度。顶层面积最大、$y$ 方向给密一点（$3$）收益更大。
+\item[\code{time\_limit\_s}（命令行默认 $3600$、库默认 $180$ 秒）] 给\textbf{分支定界主循环}的秒表上限；\textbf{不含}建模和 presolve（所以实际总时长会更长，见“已知局限 L3”）。
+\item[\code{solver\_name}（默认 \code{appsi\_highs}）] 用哪个求解引擎；HiGHS 不可用就自动\textbf{回退 GLPK $\to$ CBC}。
+\end{description}
+
+\subsection{读伪代码前先“名词扫盲”：把唬人的符号变成人话}
+两段伪代码反复出现几个符号，先一次讲透，后面就顺了。
+\begin{description}[leftmargin=2em,style=nextline,itemsep=3pt]
+\item[候选位 $p$（一张“摆好的卡片”）] 一个\textbf{已经完全摆好}的方案：哪个构件、第几层、哪个舱、横着还是顺着、单层还是双层、左下角坐标在哪、四角踩哪几块盖板——全定死。第一阶段就是\textbf{穷举所有这种合格卡片}。
+\item[足迹 $\Phi$（货物的“脚印”）] 这件货从上往下看、在甲板上\textbf{盖住的那块矩形地盘}。后面判“会不会重叠/挨太近”看的就是脚印。
+\item[可配载范围 $\mathcal{F}_{\ell,r}$（“允许放货的圈”）] 第 $\ell$ 层、第 $r$ 舱里\textbf{允许放货的那片区域}（一个多边形）。脚印必须\textbf{整个}落在圈里才合格。
+\item[盖板 $\mathcal{B}$（bypass 旁通板）/ $\mathcal{C}$（舱盖板）] $\mathcal{B}$ 是 L2/3 货物两端\textbf{担着的横板}；$\mathcal{C}$ 是 L4 货物坐落的\textbf{顶层盖板}。
+\item[支撑映射 $\mathcal{S}(p)$（一张“谁托着谁”的对照表）] 对每张上层卡片，记下它\textbf{四角分别踩在哪几块盖板上}。算承重、算该启用哪些盖板，都靠它。
+\item[\textbf{互斥对集合 $\mathcal{I}$（一张“冤家名单”）——最该懂的一个}] 它是一张\textbf{清单}，列出\textbf{哪两张卡片是“冤家”}——它俩\textbf{不能同时被选中}（因为会撞在一起、挨太近、或一个挡了另一个）。求解器拿到名单，对每一对冤家 $(p,q)$ 就守一条铁律：\textbf{最多选一个}（数学写成 $y_p+y_q\le1$）。\textbf{为什么提前算好}？“两张卡片会不会打架”是纯几何问题，第一阶段\textbf{一次性算清}存成名单，求解时直接查表，不必反复判断。名单按“为什么是冤家”分类：
+  \begin{itemize}[leftmargin=1.6em,itemsep=1pt]
+    \item $\mathcal{I}_3$：左右（$y$）挨太近（$<100$ mm）（来自 C3）；
+    \item $\mathcal{I}_4$：前后（$x$）挨太近（$<500$ mm）（来自 C4）；
+    \item $\mathcal{I}_6$：在同一盖板上\textbf{头对头顶牛}（来自 C6）；
+    \item $\mathcal{I}_{7c}$：下层货堆太高、把\textbf{上层某盖板的位置占了}（这对冤家是“卡片 $p$ 对盖板 $b$”，写成 $y_p+z_b\le1$）；
+    \item $\mathcal{I}_{7d}$：下层货堆太高、把\textbf{上层某货物的位置占了}（“卡片对卡片”）。
+  \end{itemize}
+\item[$\textsc{Reach}$（“冒到哪几层”）] 若下层一件货\textbf{双层堆得太高、冒过本层限高}，$\textsc{Reach}$ 告诉你它\textbf{冒进了上面哪几层}——这样才知道要封锁上面哪层的盖板/货位（$\mathcal{I}_{7c}/\mathcal{I}_{7d}$ 正是这么来的）。
+\item[$\mathcal{P}$（候选集 / 大名单）] 所有合格卡片的总名单，第一阶段的主产物。
+\item[层叠 $\tau$ / 朝向 $\delta$] $\tau=$ 这张卡片上下叠几件（1 或 2，仅顺船可 2）；$\delta=$ 朝向（$1$ 顺船、$0$ 横船）。
+\end{description}
+\begin{key}\textbf{一句话记住“互斥对集合”：}它就是一张\textbf{“这俩不能同时要”的冤家清单}；
+把所有几何冲突\textbf{提前算成一条条“二选一”规则}交给求解器，正是本方法把“几何问题”变成“线性约束”的关键招式。
+\end{key}
+\subsection{Algorithm 1（候选生成 GFPE）逐行精解}
+\paragraph{这个算法一句话。}把“每个构件能摆在哪”\textbf{穷举成一张张已经摆好、单看就合格的卡片（候选位）}，
+顺手算好“谁托着谁”（$\mathcal{S}$）和“哪些卡片是冤家”（$\mathcal{I}$），交给第二阶段去挑。
+
+\paragraph{输入（图中“输入/Require”，逐条说人话）。}
+\begin{itemize}[leftmargin=1.8em,itemsep=1pt]
+  \item \textbf{各构件尺寸}：6 个分段的长、宽、高、重量。
+  \item \textbf{可配载范围 $\mathcal{F}$}：每层每舱“允许放货”的多边形区域。
+  \item \textbf{盖板 $\mathcal{B},\mathcal{C}$}：bypass 旁通板（L2/3 用）与舱盖板（L4 用）的位置。
+  \item \textbf{间距 $g_x,g_y$}：前后/左右最小缝隙（$500/100$ mm）。
+  \item \textbf{各层分相数 $\{n^\ell_x,n^\ell_y\}$}：每层每方向的撒点密度旋钮（就是上面那 6 个 phase 参数）。
+\end{itemize}
+\paragraph{输出（图中“输出/Ensure”）。}
+\begin{itemize}[leftmargin=1.8em,itemsep=1pt]
+  \item \textbf{候选集 $\mathcal{P}$}：所有合格卡片的大名单。
+  \item \textbf{支撑映射 $\mathcal{S}(\cdot)$}：每张卡片四角踩哪几块盖板。
+  \item \textbf{互斥对集合 $\mathcal{I}$}：哪两张卡片是冤家、最多选一个。
+\end{itemize}
+
+\paragraph{符号速查（大白话）。}
+\begin{center}\small
+\begin{longtable}{@{}c l l@{}}
+\toprule 符号 & 读作 & 大白话 \\ \midrule\endhead
+$t,\,k$ & 货型、构件号 & 哪一型、第几个分段（$k{=}1\!\sim\!6$ 凑齐为一套） \\
+$\delta$ & 朝向 & $1$ 顺船（长边顺着船长）、$0$ 横船 \\
+$L_{tk},W_{tk}$ & 长、宽 & 这个构件的长和宽 \\
+$s_x,s_y$ & 足迹边长 & 摆好后脚印的 $x$ 边、$y$ 边长（朝向决定） \\
+$\textit{Tier}$ & 层叠候选 & 能叠几层：顺船 $\{1,2\}$、横船 $\{1\}$ \\
+$\ell,r$ & 层、舱 & 第几层、第几个舱 \\
+$g_x,g_y$ & 间距 & 前后/左右最小缝（$500/100$） \\
+$\Phi$ & 足迹 & 货物脚印矩形 $[x,x{+}s_x]\times[y,y{+}s_y]$ \\
+$\mathcal{F}_{\ell,r}$ & 可配载范围 & 该层该舱允许放货的圈 \\
+$\mathcal{S}(p)$ & 支撑盖板集 & 这张卡片四角踩的盖板 \\
+$\tau,\,H_{tk}$ & 层叠数、构件高 & 叠 1 还是 2；构件的高 \\
+$\Gamma_{3,r}(x')$ & L3 分段限高 & 第 3 层沿船长不同位置的限高 \\
+$\textsc{Reach}$ & 冒到哪几层 & 下层超高时冒进的上层集合 \\
+$\mathcal{P},\mathcal{I}$ & 候选集、冤家名单 & 见上文“名词扫盲” \\
+\bottomrule
+\end{longtable}
+\end{center}
+
+\textbf{逐行（先念伪代码、再一句大白话）：}
+\begin{itemize}[leftmargin=1.8em,itemsep=2pt]
+  \item \textbf{第 1 行} $\mathcal{P}\gets\varnothing$。\ —— 先准备一张\textbf{空名单}，等会儿往里放合格卡片。
+  \item \textbf{第 2 行} 对每个构件 $(t,k)$、每个朝向 $\delta\in\{1,0\}$。\ —— 外层把“\textbf{哪个分段、横着还是顺着}”所有组合都过一遍。
+  \item \textbf{第 3 行} 定足迹边长 $(s_x,s_y)$ 与层叠集 $\textit{Tier}$。\ —— 朝向一定，脚印多大、能不能双层就定了。$\triangleright$ 这步就\textbf{内化了 C1}（横船只能单层）。
+  \item \textbf{第 4 行} 对每层 $\ell$、每舱 $r$，按步距 $(s_x{+}g_x,\,s_y{+}g_y)$ 加分相偏移，撒网格锚点 $(x,y)$。\ —— 在允许区域里\textbf{一格一格地试“左下角放哪”}（L2/3 的 $x$ 改成“在盖板对允许的区间里取点”，见 \S4 例 3）。
+  \item \textbf{第 5 行} $\Phi\gets[x,x{+}s_x]\times[y,y{+}s_y]$。\ —— 由左下角和边长\textbf{拼出这张卡片的脚印}。
+  \item \textbf{第 6 行} 若 $\Phi\not\subseteq\mathcal{F}_{\ell,r}$ 则跳过。\ —— \textbf{脚印没整个落在允许圈里就作废}。$\triangleright$ 内化 C7a（落位）$+$ C9（不跨舱）。
+  \item \textbf{第 8 行} 求 $\mathcal{S}(p)$；若 $\ell\ge2$ 且 $\mathcal{S}(p)=\varnothing$ 则跳过。\ —— \textbf{看四角踩在哪些盖板上}；上层货\textbf{没盖板托就作废}。$\triangleright$ 内化 C5（四角落板）。
+  \item \textbf{第 9 行} 对每个层叠数 $\tau\in\textit{Tier}$。\ —— 单层、双层各试一遍。
+  \item \textbf{第 10 行} 若 $\ell=3$ 且 $H_{tk}\tau>\min\Gamma_{3,r}$ 则跳过。\ —— 第 3 层\textbf{堆太高、顶到舱盖板就作废}。$\triangleright$ 内化 C7b（L3 硬限高）。
+  \item \textbf{第 12 行} 新建卡片 $p=(t,k,\ell,r,\delta,\tau,\Phi,\mathcal{S}(p))$ 并入 $\mathcal{P}$。\ —— \textbf{过了所有检查 $\Rightarrow$ 这张卡片合格，登记进名单}。
+  \item \textbf{第 13--15 行} 三层循环依次收尾。\ —— 把“构件 $\times$ 朝向 $\times$ 层舱 $\times$ 锚点 $\times$ 层叠”所有组合走完。
+  \item \textbf{第 16 行} 按 $(\ell,r)$ 分组排序，扫描线剪枝 $+$ $\textsc{Reach}$ 判定，生成 $\mathcal{I}_3,\mathcal{I}_4,\mathcal{I}_6,\mathcal{I}_{7c},\mathcal{I}_{7d}$。\ —— \textbf{两两比对，把“会打架的卡片对”全找出来编成冤家名单}（扫描线 $=$ 排序后只跟邻近的比、省时间）。$\triangleright$ 把“间距/头对头/跨层”离线变成一条条“二选一”。
+  \item \textbf{第 17 行} 返回 $\mathcal{P},\mathcal{S}(\cdot),\mathcal{I}$。\ —— 把大名单、谁托谁、冤家名单交给第二阶段去挑。
+\end{itemize}
+
+\subsection{Algorithm 2（分支定界 CG-BnB）逐行精解}
+\paragraph{这个算法一句话。}在第一阶段给的卡片名单上，\textbf{反复“解放松版、分情况讨论、用界限剪枝”}，
+直到\textbf{证明}当前找到的套数\textbf{再也不可能更多}。
+
+\paragraph{输入（图中“输入/Require”）。}
+\begin{itemize}[leftmargin=1.8em,itemsep=1pt]
+  \item \textbf{模型 (6)}：就是第 5 节那套 MILP（变量 $y/z/S$ $+$ 约束 C2$\sim$C10）。“(6)”是 \code{model\_formulation.tex} 里那条编号公式。
+  \item \textbf{间隙容差 $\epsilon$}：上下界差小到这个值就算“证明最优”收工（本项目要 $0\%$）。
+\end{itemize}
+\paragraph{输出（图中“输出/Ensure”）。}\textbf{全局最优 $(y^\star,z^\star,S^\star)$}——$y^\star$ 选了哪些卡片、$z^\star$ 启用哪些盖板、$S^\star$ 最大套数。
+
+\paragraph{符号速查（大白话）。}
+\begin{center}\small
+\begin{longtable}{@{}c l l@{}}
+\toprule 符号 & 读作 & 大白话 \\ \midrule\endhead
+$\epsilon$ & 间隙容差 & 允许的上下界差，到了就收工（本项目要 $0$） \\
+$\hat S$ & 入射解 & \textbf{目前找到的最好整数解}（下界，“已能做到这么多”） \\
+$\mathcal{Q}$ & 活动节点集 & \textbf{还没处理完}的子问题清单 \\
+$N$ & 节点 & 一个子问题（固定了某些变量的分支） \\
+$U_N$ & 节点上界 & 该子问题 LP 松弛算出的\textbf{天花板} \\
+$(\tilde y,\tilde z,\tilde S)$ & LP 松弛解 & 放松整数后的解（\textbf{可能是小数}） \\
+$\lfloor\cdot\rfloor$ & 向下取整 & 因目标是整数，天花板可往下取整 \\
+$v$ & 分支变量 & 挑出来“分两种情况”的那个小数变量 \\
+$(y^\star,z^\star,S^\star)$ & 最优解 & 最终答案 \\
+\bottomrule
+\end{longtable}
+\end{center}
+
+\textbf{逐行（先念伪代码、再一句大白话）：}
+\begin{itemize}[leftmargin=1.8em,itemsep=2pt]
+  \item \textbf{第 1 行} presolve 得约化模型；$\hat S\gets-\infty$；$\mathcal{Q}\gets\{\text{root}\}$。\ —— 先\textbf{化简模型}（团合并那步），还没有任何解（$\hat S$ 设负无穷），待办清单里只放“根问题”。
+  \item \textbf{第 2 行} 当 $\mathcal{Q}\neq\varnothing$。\ —— \textbf{只要还有没处理完的子问题就继续}。
+  \item \textbf{第 3 行} 取节点 $N$，解 LP 松弛得上界 $U_N$ 与解 $(\tilde y,\tilde z,\tilde S)$。\ —— 拿一个子问题，\textbf{先解“放松整数”的简单版}，得到一个天花板和一个（可能带小数的）解。
+  \item \textbf{第 4 行} 若 LP 不可行 或 $\lfloor U_N\rfloor\le\hat S$ 则剪枝、\code{continue}。\ —— \textbf{两种情况直接放弃这一支}：① 根本无解；② 它的天花板还没现有最好解高（再挖也白挖）。$\triangleright$ 因目标整数，天花板\textbf{向下取整}后再比，剪得更狠。
+  \item \textbf{第 6 行} 分离割平面（团割、覆盖割）；跑启发式凑整数解，更好则更新 $\hat S$。\ —— \textbf{加几条“割”把天花板压低}；同时\textbf{用小技巧蒙一个整数解}，蒙到更好的就更新“目前最好”。
+  \item \textbf{第 7 行} 若 $(\tilde y,\tilde z)$ 已是整数解，更新 $\hat S$。\ —— \textbf{放松版的解碰巧全是整数}，那它就是这一支最优，记下来。
+  \item \textbf{第 8 行} 否则挑分数变量 $v$ 分支，把 $v{=}0$、$v{=}1$ 两个子节点放回 $\mathcal{Q}$。\ —— \textbf{还有小数就“分两种情况”}：这张卡片要么不选（$v{=}0$）、要么选（$v{=}1$），各开一个子问题接着查。
+  \item \textbf{第 10 行} 若 $\max_N\lfloor U_N\rfloor-\hat S\le\epsilon$ 则终止。\ —— \textbf{当“最高的天花板”和“目前最好解”贴到一起（差 $\le\epsilon$），就证明再也不可能更好，收工}。
+  \item \textbf{第 13 行} 返回 $(y^\star,z^\star,S^\star)$。\ —— 输出最终答案：选了哪些卡片、启用哪些盖板、最大几套。
+\end{itemize}
+\begin{key}\textbf{把本案例套进来：}presolve 把 1534 万行压到 2.6 万行；根节点 LP 上界 $27.77$、割平面收紧到 $27.59$；
+启发式 \code{L} 蒙到 $\hat S{=}27$；因目标整数，$\lfloor27.59\rfloor{=}27{=}\hat S$ $\Rightarrow$ 间隙 $0\%$，
+\textbf{第 1 个节点就收工}（日志 Nodes$=$1），输出 27 套并附最优性证明。
+\end{key}
+
+% ============================================================
+\section{最优解读 + 三视图}
+% ============================================================
+本算例最优 \textbf{27 套}：摆放位 106（L1:36 / L2:13 / L3:21 / L4:36），承载 162 件，启用 17/18 块 bypass，0 冲突。
+\begin{itemize}[leftmargin=1.8em,itemsep=1pt]
+  \item \textbf{瓶颈与层叠}：27 由最稀缺构件封顶；顺船候选位用双层堆叠，使每个构件计层叠后单元数都 $\ge27$，刚好满足成套。
+  \item \textbf{双层集中在哪}：L4（不限高）35/36 双层、L1 21/36 双层；中间两层 L2/L3 全单层（受盖板与限高制约）。
+  \item \textbf{盖板利用}：启用 17/18 块 bypass（约 94\%），逼近硬上限，说明上层空间已被充分利用。
+\end{itemize}
+\textbf{三视图}（讲同一套解、仅视角不同）：2D 分层平面图（逐层落位/朝向/单双层/盖板启用）、
+3D 立体堆叠图（整船形态，注意各层 $z$ 是\emph{拉开展示}的、非真实标高）、CAD 工程图（可交付的尺寸+重量标注底图，按构件分图层）。
+
+% ============================================================
+\section{可行性校验与一致性（含一个微妙点）}
+% ============================================================
+求解后有\textbf{独立几何校验器} \code{conflict\_checker.check\_conflicts} 复核，最终报告 \textbf{0 冲突}。
+\begin{warn}
+\textbf{一个你应当主动知道、被问到能从容应对的微妙点（校验器比模型更严格）：}\\
+模型里 C3/C4 是\textbf{按轴分别}判定的——只有当两货物在 $x$（或 $y$）投影\emph{重叠}时，才要求另一轴满足间距。
+而独立校验器用的是\textbf{合取式判据}：当 $x$ 向净距 $<500$ \textbf{且} $y$ 向净距 $<100$ 时即记冲突
+（等价于把货物按间距外扩后矩形相交，即 Minkowski 包络相交）。
+可以证明\textbf{校验器标记的冲突是模型所禁集合的“超集”}：模型禁止的它一定也禁，反之它还会额外标记“对角线擦肩”
+（两货既不在 $x$ 也不在 $y$ 投影重叠、但对角线方向靠得很近）这类模型允许的情形。
+\textbf{因此“0 冲突”是更强的结论}——连更严格的合取判据都挑不出毛病。
+若评委追问“两者是否完全等价”，照实说：\emph{不完全等价，校验器更保守；本解在两种判据下都通过}。
+\end{warn}
+
+% ============================================================
+\section{已知局限与诚实边界（主动亮出比被戳穿好）}
+% ============================================================
+\begin{description}[leftmargin=1.5em,style=nextline,itemsep=2pt]
+\item[L1 离散化 $\Rightarrow$ 仅候选集内最优] MILP 求的是\textbf{所枚举候选集 $\setP$ 上}的全局最优，并非真实连续坐标空间的全局最优。
+应对：加密分相做了收敛实验（见下），$24\to26\to27$ 后\textbf{饱和于 27}，再加密（T5）不再提升，故有把握 27 即几何上限。
+\item[L2 冲突对 $O(N^2)$ 内存] 候选数 $\ge2\times10^4$ 时配对约束可达 $10^7\sim10^8$，建模阶段可能 OOM；现用扫描线+分组缓解。
+\item[L3 presolve 不受时限控制] \code{time\_limit\_s} 只限分支定界主循环，\textbf{不含建模与 HiGHS presolve}，故总 wall time 会超过设定值。
+\item[L4 单实例、无 warm-start] 每次从零建模求解，不复用历史解。
+\item[L5/L6 多货型/混叠未实测] 模型形式上支持多货型按 $(t,k)$ 分组；\code{tier} 仅 1/2 且要求同构件同高，分件混叠未建模。
+\item[L7 矩形足迹] 把塔筒锥度、吊耳等简化为矩形包围盒，极端情况可能高/低估间距与碰撞。
+\item[L8 重心/稳性/系固未建模] 当前\textbf{不含}船舶配载的重量分布、稳性（GM）、强度、绑扎系固校核，只解几何+承重+成套。这是\textbf{后续工程化方向}。
+\end{description}
+
+\begin{center}\small
+\textbf{分相加密收敛实验（证明 27 是上限的关键证据）}\\[2pt]
+\begin{tabular}{clrcc}
+\toprule
+试验 & 分相 (L1;L23;L4) & 候选位 & 对偶上界 & 整数最优 $S^\star$ \\
+\midrule
+T1 & (1,1;1,1;1,1) & 5\,040  & 27.8 & 24 \\
+T2 & (2,1;2,1;2,2) & 9\,210  & 27.8 & 26 \\
+T3 & (2,2;2,2;2,2) & 13\,860 & 27.7 & 27 \\
+\textbf{T4} & \textbf{(3,2;2,2;2,3)} & \textbf{16\,629} & \textbf{27.0} & \textbf{27（采用，间隙 0\%）} \\
+T5 & (3,3;3,3;3,3) & 28\,150 & 27.0 & 27（不再改善） \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% ============================================================
+\section{答辩问题库（按类，标准话术）}
+% ============================================================
+
+\subsection{A 类 · 问题理解}
+
+\begin{qa}{A1. 这个项目到底解决什么实际痛点？}
+\A 风电塔筒按“套”发运、必须成套，且船舶舱位、盖板、限高都受限。人工配载靠经验，
+难保证“到底还能不能多装一套”。我们用优化算法\textbf{在满足全部工程约束下最大化完整套数}，
+并给出\textbf{数学上可证明的最优}，把“装到极限了吗”从经验判断变成可证结论。
+\oneline{把人工经验配载升级为“可证明最优”的自动配载。}
+\end{qa}
+
+\begin{qa}{A2. 为什么“成套”这么关键？不成套会怎样？}
+\A 一套塔筒 6 个分段缺一不可，到港才能组装成一座塔。船上多装了第 5 段却缺第 1 段，
+这一套就是\textbf{残套}，不能形成有效交付。所以目标不是“装最多件”，而是“凑齐最多\textbf{套}”——
+这由\textbf{最稀缺的那个构件}决定（C2 成套约束 + 瓶颈逻辑）。
+\end{qa}
+
+\begin{qa}{A3. 坐标系原点在哪？为什么有负坐标？}
+\A 坐标单位是 mm，原点取在船体某基准（近船中），所以船首/尾一侧出现负 $x$ 很正常。
+舱盖板（Layer4）覆盖范围从约 $-40149$ 到 $+124009$，跨越整个甲板。算法对坐标正负无要求，纯几何处理。
+\end{qa}
+
+\begin{qa}{A4. bypass 盖板（旁通板）是什么？为什么 Layer2/3 货物要“担”在上面？}
+\A bypass 盖板是架设在舱口上的承载板，相当于横梁。Layer2/3 的货物不能悬空，
+\textbf{两端必须落在盖板上}才有支撑（这就是 C5 四角落板、C8 启用、C10 承重的来由）。
+本算例每层 20 块、共 40 块，且\textbf{Hatch4 没有盖板}，故 L2/L3 只能用 Hatch1/2/3。
+\end{qa}
+
+\subsection{B 类 · 方法与建模选择}
+
+\begin{qa}{B1. 为什么用 MILP，而不是遗传算法/模拟退火/贪心？}
+\A 启发式快但\textbf{不能证明最优}、易陷局部最优，对“成套”这种全局耦合尤其吃亏。
+客户最关心“是否已装到极限”，这\textbf{必须有最优性证明}。离散化后规模可控，
+HiGHS 的 presolve 能把上千万约束压到可解，几分钟给出\textbf{零间隙}最优。所以这里精确法不仅可行，而且更对路。
+\end{qa}
+
+\begin{qa}{B2. 为什么用候选离散化，而不是直接对连续坐标做优化？}
+\A 直接对 $(x,y)$ 连续变量 + 选朝向/层叠建模，是\textbf{混合整数非线性、非凸}问题，
+既难建模又难保证最优。离散化把它降成\textbf{纯 0--1 选择}，且让一大批纯几何约束在生成阶段就被满足，
+模型只剩下线性的关系型约束——可被成熟 MILP 求解器证明最优。这是工业界处理布局/排样的成熟范式。
+\end{qa}
+
+\begin{qa}{B3. 离散化会不会把更好的解丢掉？怎么保证不丢最优？}
+\A 会有这个理论风险——我们求的是\textbf{候选集内}最优。应对是用\textbf{分相参数加密}做收敛实验：
+密度从稀到密，整数最优 $24\to26\to27$ 后\textbf{饱和于 27}，再加密（T5，2.8 万候选）不再提升、只增耗时。
+\textbf{对偶上界也一直 $<28$}，说明 28 套在松弛意义下都不可达。两条证据合起来，有充分把握 27 即几何上限。
+\oneline{靠“逐步加密直到解饱和 + 对偶界佐证”来确认没丢最优。}
+\end{qa}
+
+\begin{qa}{B4. 为什么目标是最大套数，而不是最大载重或舱容利用率？}
+\A 因为业务价值由\textbf{成套交付}决定：多装半套没有价值。最大化套数直接对齐商业目标。
+载重/利用率是\emph{结果}而非目标——在 27 套解里它们已被同时拉高（如 bypass 用到 17/18）。
+\end{qa}
+
+\begin{qa}{B5. 这是 NP 难问题吗？规模这么大为什么还敢求精确最优？}
+\A 二维布局/装箱属\textbf{NP 难}。但“NP 难”说的是\emph{最坏情况}；本问题离散化后的实例\textbf{结构特别好}——
+约束几乎全是“两两不相容”，对应一张稀疏冲突图，HiGHS 用团合并/割平面把它压到 2.6 万行，
+根节点就逼近整数最优。所以\textbf{特定实例可解}与\textbf{一般问题 NP 难}并不矛盾。
+\end{qa}
+
+\subsection{C 类 · 候选生成（深水区）}
+
+\begin{qa}{C1. 候选位到底怎么生成的？一步步讲。}
+\A 三重循环：\textbf{每构件 $\times$ 每朝向 $\times$ 每可行区域}。朝向定足迹边长与可选层叠（顺船可双层、横船只单层）；
+按步距 $=$ 尺寸 $+$ 间距撒网格锚点，并叠加\textbf{分相偏移}加密；每个锚点过几何过滤——
+落入可配载多边形、（L$\ge$2）四角落盖板、（L3）过自身限高；通过后按层叠数生成候选位、记录所担盖板。
+\textbf{不通过的锚点根本不生成}，所以每个候选位单体一定可行。
+\end{qa}
+
+\begin{qa}{C2. phase（分相）参数是什么？为什么要它？}
+\A 单套网格的锚点相位是固定的，会错过“稍微挪一点就能多塞一个”的位置。
+分相就是\textbf{把同一张网格平移 $\tfrac{1}{n}$ 步距、叠加 $n$ 次}，等价于加密锚点，
+又不破坏“相邻锚点天然满足最小间距”的好性质。\textbf{它是解质量与规模/耗时之间的旋钮}：
+分相越多候选越密、解越好、越慢。本算例采用 T4 配置 $(3,2;2,2;2,3)$。
+\end{qa}
+
+\begin{qa}{C3. Layer1 和 Layer2/3 的生成方式有何本质不同？}
+\A Layer1 是\textbf{舱内自由网格}（无需支撑）。Layer2/3 货物两端必须担在盖板上，
+所以\textbf{不是自由网格，而是以“盖板对 $(b_L,b_R)$”为锚}：先由“两端各落在左/右板内”反解出 $x$ 可行区间再取点，
+$y$ 在盖板跨度内按槽撒点，并\textbf{严格校验四角点在板内}。$i=j$ 是单板承载、$i<j$ 是跨相邻两板。
+\end{qa}
+
+\begin{qa}{C4. 为什么 Layer2/3 要锚定在板对上，而不像 Layer1 直接撒网格？}
+\A 因为 C5 要求四角落板。若像 L1 自由撒网格，绝大多数点会落在盖板缝隙或边界外，
+生成大量无效候选再过滤，既慢又浪费。\textbf{直接以盖板几何为锚反解可行位置}，
+既保证四角落板，又大幅减少无效枚举——这是“把约束尽量前移到生成期”的工程优化。
+\end{qa}
+
+\begin{qa}{C5. 16\,629 个候选位是怎么来的？各层多少？}
+\A 这是 T4 分相配置下、6 构件 $\times$ 两朝向 $\times$ 各层可行位置过滤后的总数：
+L1:2142、L2:7563、L3:3591、L4:3333。L2 最多，因为盖板对组合 $\times$ 槽位 $\times$ 分相的乘积大。
+\end{qa}
+
+\begin{qa}{C6. 步距为什么取“尺寸 + 间距”？}
+\A 这样\textbf{相邻锚点之间天然就留出了最小间距}（横向 100、纵向 500）。
+于是同一套网格内的候选位彼此不会违反间距，间距冲突只可能出现在\emph{不同分相/不同朝向}的候选位之间，由 C3/C4 冲突对兜底。
+\end{qa}
+
+\begin{qa}{C7. 朝向和层叠怎么枚举？为什么 Layer3 没有双层？}
+\A 每个通过过滤的锚点，按朝向允许的层叠集生成候选位：顺船生成 tier 1 和 2，横船只生成 tier 1。
+\textbf{Layer3 的 tier=2 高度 $2\times4640=9280>$ 限高 $5618$，被高度检查全部过滤}，所以 L3 实际全单层。
+\end{qa}
+
+\begin{qa}{C8. 如果某个构件一个候选位都没有，会怎样？}
+\A C2 成套约束里该构件的可装量为 0，会\textbf{强制 $S=0$}（缺一件成不了套）。
+这也是个有用的健壮性：数据若让某构件无处可放，模型会如实给出“0 套”而非偷偷漏算。
+\end{qa}
+
+\begin{qa}{C9. 分相是不是多此一举？直接用一个更小的步距、能放就放，不行吗？（尖锐题）}
+\A \textbf{先纠正一个常见误解：}$500$ 不是步距，是\textbf{工艺强制的最小纵向间距 $g_x$}（规范给定的常量）；
+真正的步距是 $\Delta_x=s_x+g_x$（足迹 $+$ 间距，如 1 号构件顺船 $=8910{+}500{=}9410$）。取 $s_x{+}g_x$ 是因为它是\textbf{“恰好不重叠的最紧铺法”}：同一张网格里相邻两件正好隔 $g_x$、自身零冲突。\\[2pt]
+\textbf{你的直觉是对的：}$n$ 个分相（步距 $\Delta_x$、依次偏移 $\Delta_x/n$）叠起来，\textbf{就等于一张步距 $\Delta_x/n$ 的均匀细网格}（例：$3$ 相 $\times9410$ 合并后相邻间距恒 $\approx3136=9410/3$）。所以\textbf{分相没做任何“小步距做不到”的事}，$\texttt{step}{=}\Delta_x/n$ 与“开 $n$ 个分相”等价。\\[2pt]
+\textbf{那为什么不直接用很小的固定步距？}两个真实原因：
+（1）\textbf{成本}——重叠候选确实靠“后判断”的冲突对 $y_p{+}y_q\le1$ 筛除，但\textbf{这恰是全流程最贵的一步}（$O(N^2)$，T4 已 1500 万行）。步距取很小 $\Rightarrow N$ 暴涨几十倍 $\Rightarrow$ 冲突对 $\sim N^2$ 到 $10^{10}$ 量级 $\Rightarrow$ \textbf{建模阶段直接 OOM}（即局限 L2）。
+（2）\textbf{尺度相对 $+$ 好调}——$\Delta_x$ 随构件大小走，分相是“按各构件\emph{自身尺寸}成比例细化”，比全局固定小步距省（$26$ m 大件不必被 $100$ mm 细分出一堆几乎一样的候选）；且“分相数”是小整数旋钮，配 T1--T5 加密实验好调。\\[2pt]
+\textbf{诚实结论：}分相\textbf{不是必需的高级技巧}，就是“把无冲突基准网格按整数倍加密”的一种参数化写法，等价于更小步距；选它是为\textbf{控规模 + 尺度相对 + 调参方便}。而且加密实验反过来印证——$n{=}2\!\sim\!3$ 就饱和于 27 套，\textbf{再细纯属浪费}。真正的哲学不是“越密越好”，而是“密到刚好够到最优、且模型还建得起来”。
+\end{qa}
+
+\subsection{D 类 · 约束}
+
+\begin{qa}{D1. 10 个约束分别是什么？哪些进模型、哪些在生成期？}
+\A 见 \S5 速记表。\textbf{进 MILP 的关系型约束}：C2 成套、C3/C4 间距、C6 头对头、C7c/C7d 跨层耦合、C8 bypass、C10 承重。
+\textbf{生成期内化的单体几何约束}：C1 朝向-层叠、C5 四角落板、C7a 落位、C7b 的 L3 限高、C9 不跨舱。
+这样划分能\textbf{大幅缩小模型规模}——把能在生成期解决的几何条件全部前移。
+\end{qa}
+
+\begin{qa}{D2. C2 成套约束为什么能保证“整数套、不出残套”？}
+\A 形式是“对每个构件 $\sum\tau_p y_p\ge S$”，且 $S$ 是\textbf{整数变量}、目标 $\max S$。
+于是最优 $S^\star=\min_k(\text{构件 }k\text{ 可装单元数})$，即\textbf{瓶颈构件}的数量。
+因为 6 个构件共享同一个 $S$，凑不齐的那一件会把 $S$ 压下来，\textbf{结构上排除了残套}。
+\end{qa}
+
+\begin{qa}{D3. 跨层耦合 C7 举个具体例子？}
+\A Layer1 一个顺船双层候选位，堆高 $9280$ mm，超过 L1 限高 $6329$，于是\textbf{侵入 Layer2 的高度带}。
+后果有二：（C7c）它正上方覆盖的 Layer2 bypass 盖板被\textbf{禁用}（不能再在那儿担货）；
+（C7d）与它平面重叠的 Layer2 货物候选位\textbf{不能同选}。这就把“下层堆高吃掉上层空间”的物理事实写进了模型。
+\end{qa}
+
+\begin{qa}{D4. 头对头 C6 到底禁止什么？}
+\A 货物担在盖板上时，从货物端部到所担盖板外缘、沿货物宽度有一条\textbf{禁忌带}（端部操作/系固空间）。
+C6 禁止任何其他货物侵入这条带——即两件货物在同一盖板上\textbf{端对端顶牛}。实现上预算每个担板候选位的两侧禁区矩形，与他者足迹相交即互斥。
+\end{qa}
+
+\begin{qa}{D5. 承重 C10 的“半重”是什么意思？}
+\A 一件货物两端各担在一块盖板上，\textbf{每块盖板只承担它一半的重量}，故记“半重” $=\text{weight}\times\text{tier}/2$（双层先翻倍）。
+每块盖板上所有货物的半重之和除以盖板面积 $\le 3\unit{t/m^2}$。bypass 的容量受 $z_b$ 门控，舱盖板恒可用。
+\end{qa}
+
+\begin{qa}{D6. 间距这种几何条件怎么变成线性约束？}
+\A 不在模型里算距离，而是\textbf{在生成期预先枚举所有“离得太近”的候选位对}，
+对每一对加一条 $y_{p}+y_{q}\le1$（两者最多选一个）。这把几何判定\textbf{离线化}成纯线性的“不相容”约束，
+正是离散化方法的威力所在。
+\end{qa}
+
+\subsection{E 类 · 求解过程}
+
+\begin{qa}{E1. 1500 万行约束，求解器怎么解得动？}
+\A 这些行几乎全是 $y_p+y_q\le1$ 的两两不相容，构成一张\textbf{冲突图}。
+HiGHS 的 presolve 用\textbf{团合并}把“这一团里最多选一个”聚合成单条团约束，
+行数从 1534 万压到 \textbf{2.6 万}、非零从 3075 万压到 121 万，约三个数量级。之后分支定界很快收敛。
+\end{qa}
+
+\begin{qa}{E2. 为什么“节点数 = 1”就证明了最优？}
+\A 根节点 LP 松弛 + 割平面把对偶上界压到约 $27.59<28$；启发式找到可行解 $S=27$。
+\textbf{目标是整数} $\Rightarrow$ 上界向下取整为 $27$ $\Rightarrow$ 上界 = 下界 = 27 $\Rightarrow$ 间隙 0\%。
+不存在 28 的可能，无需再分支，故 1 个节点就关闭。
+\end{qa}
+
+\begin{qa}{E3. 最优性间隙 0\% 到底是什么意思？}
+\A 求解器维护\textbf{下界}（已找到的最好可行解）和\textbf{上界}（对偶界，理论天花板）。
+间隙 $=$（上界$-$下界）/下界。间隙 0\% 即两者重合，\textbf{数学证明}当前解就是全局最优、不可能更好。
+这是 MILP 区别于启发式的根本价值。
+\end{qa}
+
+\begin{qa}{E4. 求解 433 s、端到端 976 s，能更快吗？瓶颈在哪？}
+\A 端到端的大头其实是\textbf{建模与冲突对枚举}（生成 1500 万行）。想更快可：
+（1）适度降分相（如 T3，1.4 万候选也能到 27）；（2）把成对约束改成\textbf{懒约束/回调}只在违反时加入（需 Gurobi/CP-SAT）；
+（3）列生成。这些都在“未来方向”里列了。当前几分钟出证明最优，对离线配载完全够用。
+\end{qa}
+
+\begin{qa}{E5. 如果时限到了还没找到可行解怎么办？}
+\A 当前实现会返回空结果（$S=0$）并带状态标记，由调用方处理。
+这是已知局限之一（无 LP 松弛/部分解回收）。实践中通过\textbf{合理设分相}避免触发——本算例从未触发。
+\end{qa}
+
+\subsection{F 类 · 结果}
+
+\begin{qa}{F1. 27 套是全局最优吗？怎么证明？}
+\A 是\textbf{候选集 $\setP$ 上}的全局最优，且\textbf{间隙 0\%}——求解器给出了对偶界等于 27 的证明，
+即在该候选集上不存在 28 套方案。再结合分相加密的饱和实验，有充分把握 27 是几何上限。
+\end{qa}
+
+\begin{qa}{F2. 27 套是这套数据的物理上限吗？}
+\A 严格说，是\textbf{当前离散化下可证的最优}。物理真上限需穷尽连续空间，无法直接验证；
+但我们用\textbf{加密到 2.8 万候选仍是 27}（T5）+ \textbf{对偶上界始终 $<28$} 两条独立证据，论证 27 即实际上限。
+\end{qa}
+
+\begin{qa}{F3. 为什么只启用 17 块 bypass，而不是用满 18 块？}
+\A 18 是\textbf{上限不是目标}。启用更多盖板不一定能多装套——还受成套瓶颈、限高、承重制约。
+17 块已是达到 27 套所需，第 18 块的边际贡献为 0，所以最优解没必要启用它（C8c 还会禁止“无人使用却启用”的虚假启用）。
+\end{qa}
+
+\begin{qa}{F4. 为什么各层装载不均衡，Layer2 只有 13 个？}
+\A 因为各层条件不同：L1（舱内）、L4（顶层不限高）适合大量双层堆叠、是主力层；
+L2/L3 受盖板布局、限高、头对头、承重多重制约，能塞的少。\textbf{优化器按“哪儿能多凑套就往哪儿放”自动权衡}，
+结果就是 L1/L4 重、L2/L3 轻。L2 偏少也提示\textbf{未来挖潜方向}。
+\end{qa}
+
+\begin{qa}{F5. 0 冲突是怎么验证的？校验器和模型完全一致吗？}
+\A 有\textbf{独立几何校验器}复核全部摆放位，报告 0 冲突。
+\textbf{要诚实：校验器比模型更严格}——它用“$x$ 距 $<500$ 且 $y$ 距 $<100$ 即冲突”的合取判据（外扩矩形相交），
+会额外标记模型允许的“对角线擦肩”。所以 0 冲突是\textbf{更强}的结论：连更严的判据都挑不出问题。两者非完全等价，校验器更保守。
+\end{qa}
+
+\subsection{G 类 · 质疑与边界（adversarial）}
+
+\begin{qa}{G1. 你这只是候选集内最优，不是真最优吧？}
+\A 对，这点我们\textbf{从不回避}。真实连续最优无法直接求证。我们的论证是双重的：
+分相加密到饱和（$24\to26\to27\to$ 不再变）+ 对偶上界恒 $<28$。在工程意义上，27 即可交付的最优。
+\end{qa}
+
+\begin{qa}{G2. 再加密分相还能多装吗？}
+\A 不能。T5（2.8 万候选）实测仍是 27，且对偶界 27.0 封死了上方。\textbf{继续加密只增耗时、不提质量}，
+所以我们停在 T4——这正是“算到饱和”的体现。
+\end{qa}
+
+\begin{qa}{G3. 矩形足迹忽略了塔筒锥度、吊耳，安全吗？}
+\A 当前用矩形包围盒，对锥度/吊耳是\textbf{保守近似}（包围盒比真实轮廓大，间距判定偏严）。
+极端情形可能高估或低估碰撞，已列为局限 L7。后续可升级为真实多边形足迹甚至 3D 碰撞建模（未来方向 F6）。
+\end{qa}
+
+\begin{qa}{G4. 换一套数据/船型还能用吗？要重新调参吗？}
+\A 方法论通用：换数据只需更新输入，再由\textbf{调参（逐步加密分相）}确认饱和即可。
+间距、承重、上限等都是参数化的。需要人工介入的只有\textbf{分相档位}，且有 Fast/Standard/Fine 经验值与自动整定思路（F10）。
+\end{qa}
+
+\begin{qa}{G5. 多货型、多船次能处理吗？}
+\A 模型形式上已按 $(t,k)$ 分组支持多货型，但当前数据只有 1 种货型，\textbf{“跨类型不混套”的语义需上线后回归验证}（L5）。
+多船次/多航次联合调度是更大的问题，可用 Benders/DW 分解与本 MILP 耦合（F9），属规划中的扩展。
+\end{qa}
+
+\begin{qa}{G6. 为什么 API 默认只跑出 24 套，不是 27 套？（很可能被问）}
+\A 这是\textbf{入口默认值差异}，要讲清：命令行入口 \code{src/main.py} 用的是 \code{gen\_candidates} 的\textbf{T4 默认分相}，直接得 27 套；
+而 HTTP API/库函数 \code{solve\_stowage} 的默认分相是\textbf{全 1}（最经济档，约 5040 候选、约 24 套），
+\textbf{需要在 \code{options.phases} 里显式传 T4 配置才得 27}。
+报告里的 27 套对应 T4 配置。这是\textbf{速度优先 vs 质量优先}的两个档位，不是 bug。
+\oneline{27 套来自 T4 分相（CLI 默认）；API 默认走的是最快的全 1 档，需显式提质量档。}
+\end{qa}
+
+\begin{qa}{G7. 重心、稳性（GM）、强度、绑扎系固考虑了吗？}
+\A \textbf{诚实：当前不含}。本模型解的是\textbf{几何布局 + 承重 + 成套}，
+不含整船重量分布/稳性/总纵强度/系固校核。这些是配载交付前的\textbf{必要后续校核}，
+也是明确的工程化方向。当前成果是\textbf{给出几何最优的配载骨架}，再交专业软件做稳性复核。
+\end{qa}
+
+\begin{qa}{G8. presolve 不受时限控制，工程上能接受吗？}
+\A 能，但要说明：\code{time\_limit\_s} 只限分支定界，\textbf{不含建模与 presolve}，
+所以实际总时长 $=$ 建模 $+$ presolve $+\min$(求解,时限) $+$ 输出。对\textbf{离线配载}（非实时）这完全可接受；
+若要严格控总时长，降分相即可。这点在 API 文档里已明确告知调用方。
+\end{qa}
+
+\subsection{H 类 · 对比与扩展}
+
+\begin{qa}{H1. 为什么选 HiGHS，不用 Gurobi/CPLEX？}
+\A HiGHS 是\textbf{开源、免费、无授权门槛}的一流 MILP 求解器，presolve（团合并）对本问题的冲突图结构特别有效，
+本算例已能零间隙求解。Gurobi/CPLEX 更快且支持懒约束/回调（利于做 F1 优化），但需商业授权；
+架构上我们\textbf{可无缝切换}（Pyomo 抽象层，回退链 GLPK/CBC 已在）。
+\end{qa}
+
+\begin{qa}{H2. 用 CP-SAT 或列生成会不会更好？}
+\A 各有所长。CP-SAT 擅长这类组合约束、原生支持懒约束，能避免一次性物化 1500 万行；
+列生成适合候选集超大时\textbf{动态加列}。两者都在未来方向里（F1/F3）。当前 MILP+HiGHS 已满足精度与时效，故先用成熟稳妥的方案。
+\end{qa}
+
+\begin{qa}{H3. “智能体调参”是噱头吗？人工调不行吗？}
+\A 本质是\textbf{自动化的逐步加密实验}：反复求解、观测整数最优与对偶界，直到解饱和、间隙 0。
+人工也能做，但智能体把“试 T1$\to$T5、看收敛、选最经济达标档”这套流程\textbf{自动化、可复现}，
+对换数据时快速重定档很有价值（F10 进一步设想用历史数据预测最优档位）。
+\end{qa}
+
+\subsection{I 类 · 实现与工程}
+
+\begin{qa}{I1. 代码结构怎么组织的？}
+\A 分层清晰：\code{core/}（数据模型、几何、候选生成）、\code{constraints/}（C1--C10 每条一个文件）、
+\code{solver/}（Pyomo 建模与求解）、\code{viz/}（2D/3D 可视化与校验）、\code{output/}（JSON 与 CAD 导出）、
+\code{service/}+\code{api/}（流水线与 HTTP SSE 接口）。\textbf{每条约束独立成类}，便于核对与扩展。
+\end{qa}
+
+\begin{qa}{I2. 怎么保证“生成期内化的约束”和模型不打架？}
+\A C1/C5/C9 在模型里保留为\textbf{断言型检查}：遍历所有候选位，若发现违反（如横船却 tier=2、四角未落板、L1/2/3 缺舱号）就\textbf{抛错}。
+这等于在建模时再确认一遍生成期没漏过滤，是一道\textbf{防回归的安全网}。
+\end{qa}
+
+\begin{qa}{I3. 三视图怎么保证讲的是同一套解？}
+\A 2D/3D/CAD 都从\textbf{同一份 result.json} 渲染，只是视角不同。关键数字（27 套 / 162 件 / 106 摆放位 36·13·21·36 / 17 块 bypass）
+在三图中应处处一致，构件配色与编号一一对应。一致即说明同一最优方案被正确地多角度呈现。
+\end{qa}
+
+% ============================================================
+\section{硬骨头：最可能把你问倒的问题 + 应对}
+% ============================================================
+\begin{warn}
+下面这几条是\textbf{诚实边界}，被追到底时\textbf{大方承认 + 给出已有论证/后续方向}远胜于强辩。
+\begin{enumerate}[leftmargin=1.6em,itemsep=3pt]
+  \item \textbf{“真的是全局最优吗？”} —— 承认是\emph{候选集内}最优；亮出饱和实验 + 对偶界 $<28$ 两条证据。
+  \item \textbf{“校验器和模型的间距判据一致吗？”} —— 不完全一致，\textbf{校验器更严}（合取/外扩相交，会标记对角线擦肩）；0 冲突是更强结论。
+  \item \textbf{“API 默认怎么只有 24 套？”} —— 入口默认档不同：CLI 用 T4（27），API 默认全 1（最快，约 24），需显式传 T4 提质量。
+  \item \textbf{“稳性/重心/系固呢？”} —— 当前不建模，只解几何+承重+成套；属交付前必做的后续校核。
+  \item \textbf{“presolve 超出时限怎么办？”} —— 时限只管分支定界；总时长会更长；离线场景可接受，降分相可控。
+  \item \textbf{“矩形足迹够准吗？”} —— 对锥度/吊耳是保守近似；可升级真实多边形/3D 碰撞。
+  \item \textbf{“Layer2 为什么能超自己的限高、Layer3 却不能？”} —— L3 之上是必须盖回的舱盖板，故 L3 限高硬过滤；
+        L1/L2 之上是货物层，超高被允许但由 C7c/C7d 占用/封锁上层空间作为代价。
+\end{enumerate}
+\end{warn}
+
+\begin{key}\textbf{临场万能结构（任何不确定的问题都能套）：}
+（1）\textbf{先复述确认}评委的问题；（2）说清\textbf{当前实现是怎么处理/为什么这样选}；
+（3）若是局限，\textbf{坦承边界} + 指出\textbf{已有的缓解或后续方向}；（4）拉回到\textbf{已被证明的核心结论}（27 套、间隙 0、0 冲突）。
+不知道的，就说“这点当前未覆盖，属于 XX 方向；在现有框架里可通过 XX 扩展”，\textbf{不要编}。
+\end{key}
+
+% ============================================================
+\section{术语表（脱口而出版）}
+% ============================================================
+\begin{longtable}{@{}p{3.4cm}p{11.4cm}@{}}
+\toprule
+术语 & 一句话解释 \\
+\midrule
+\endhead
+成套 / set & 6 个分段（cn 1$\sim$6）配齐为一套；只装部分不算。 \\
+候选位 / placement & 一个完全确定的摆放方案原子（构件+层+舱+朝向+层叠+坐标+所担盖板）。 \\
+离散化 / discretization & 把连续坐标的“放哪”枚举成有限个候选位。 \\
+分相 / phase & 把网格平移叠加以加密锚点的参数；解质量与规模的旋钮。 \\
+bypass 盖板 / 旁通板 & Layer2/3 货物两端所担的承载板（像横梁）。 \\
+舱盖板 / hatch cover & Layer4 货物坐落的顶层盖板。 \\
+tier / 层叠 & 同一摆放位上下叠几件（1 或 2，仅顺船可 2）。 \\
+direction / 朝向 & 1=顺船（长边沿 $x$），0=横船（长边沿 $y$）。 \\
+MILP & 混合整数线性规划：部分变量取整数的线性优化。 \\
+LP 松弛 & 把整数约束放松成连续，得到目标的上界。 \\
+对偶界 / 上界 & 目标理论上不可能超过的值；与下界相等即证明最优。 \\
+最优性间隙 / gap & （上界$-$下界）/下界；0\% 即已证全局最优。 \\
+presolve & 求解前的化简；本问题靠团合并把约束压三个数量级。 \\
+团 / clique & 冲突图中两两互斥的一组候选位，“最多选一个”。 \\
+冲突对 & 几何上不能共存的两个候选位 $(p,q)$，加 $y_p+y_q\le1$。 \\
+跨层耦合 & 下层堆高侵入上层、从而占用/封锁上层空间的约束（C7）。 \\
+半重 / half-weight & 货物两端各担一块板，每块承担一半（双层先翻倍）。 \\
+\bottomrule
+\end{longtable}
+
+\vfill
+\begin{center}\small\itshape
+本手册数字与机制均核对自源代码（\code{src/} 树）与输入数据（\code{data/test\_data.json}）。
+答辩前请重点记忆 \S2 速记卡与 \S11 硬骨头。祝答辩顺利。
+\end{center}
+
+\end{document}

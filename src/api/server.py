@@ -23,14 +23,18 @@ app.add_middleware(
     allow_methods=["*"], allow_headers=["*"],
 )
 _API_DIR = Path(__file__).parent
-_DEMO_HTML = _API_DIR / "demo.html"
 _STATIC_DIR = _API_DIR / "static"
 _STATIC_DIR.mkdir(parents=True, exist_ok=True)
+# Built SPA (Vite -> static/app); falls back to the legacy single-file demo.
+_SPA_INDEX = _STATIC_DIR / "app" / "index.html"
+_DEMO_HTML = _API_DIR / "demo.html"
 app.mount("/static", StaticFiles(directory=_STATIC_DIR), name="static")
 
 
 @app.get("/")
 def demo_page():
+    if _SPA_INDEX.exists():
+        return FileResponse(_SPA_INDEX)
     if _DEMO_HTML.exists():
         return FileResponse(_DEMO_HTML)
     return {"hint": "POST /solve with test_data JSON to start a solve."}
